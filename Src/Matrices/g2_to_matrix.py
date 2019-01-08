@@ -7,6 +7,9 @@ Group 2
 # coding: utf-8
 
 import pandas as pd
+from tqdm import tqdm
+from sklearn.preprocessing import scale
+
 
 '''
 Function toMatrix
@@ -28,6 +31,20 @@ def to_matrix(filepath_rating, filepath_product):
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
     df_join = df_join.loc[df_join['subtype_id'] == 1.0]
+
     df_join = df_join.pivot(index='user_id', columns='product_id',
                             values='rating')
     return df_join
+
+'''
+Function unbias
+
+Input : DataFrame to be unbiased
+Output: Unbiased matrix
+The function centers and reduces the given dataframe, item by item
+Ignores missing  values
+'''
+
+def unbias(df):
+    return scale(df)
+
