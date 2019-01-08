@@ -55,8 +55,8 @@ def unbias(df,axis = 0, mean = False):
     if axis !=0:
         df = df.T
     if mean:
-        df.fillna(5.5, inplace = True) 
+        df = df.fillna(5.5) 
 
     return scale(df)
 
-print(unbias(to_matrix('../data_v3/ratings_V3.csv','../data_v3/products_V3.csv'), True))
+print(unbias(to_matrix('../data_v3/ratings_V3.csv','../data_v3/products_V3.csv'), mean = True))
