@@ -59,4 +59,3 @@ def unbias(df,axis = 0, mean = False):
 
     return scale(df)
 
-print(unbias(to_matrix('../data_v3/ratings_V3.csv','../data_v3/products_V3.csv'), mean = True))
