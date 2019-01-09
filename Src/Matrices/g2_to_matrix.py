@@ -93,6 +93,3 @@ def unbias(df, axis=0, mean=False):
         df = df.fillna(5.5)
 
     return scale(df)
-
-=======
->>>>>>> Stashed changes
