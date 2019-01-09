@@ -92,7 +92,7 @@ Ignores missing  values
 def unbias(df, axis = 0,mean = False):
     try:
         if axis == 1:
-            dt = df.T
+            df = df.T
         elif axis != 0:
             raise Exception('axis', 'Axis has only two possible values 0 and 1')
         if mean:
@@ -101,8 +101,13 @@ def unbias(df, axis = 0,mean = False):
         dico = {}
         for col in columns:
             index = df[col][df[col].notna()].index
-            dico[col] = list(zip(index, scale(df[col][index])))
+            dico[col] = set(zip(index, scale(df[col][index])))
         return dico
     except Exception as ex:
         print(ex)
 
+'''
+arr = unbias(to_matrix("../data_v3/ratings_V3.csv","../data_v3/products_V3.csv"))
+#print(arr)
+for k in arr.keys():
+    print(pd.DataFrame(list(arr[k]), columns = ['item_id','rating']))'''
