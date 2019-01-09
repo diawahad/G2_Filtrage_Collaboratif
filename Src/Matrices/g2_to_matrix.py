@@ -104,6 +104,12 @@ def unbias(df, axis = 0,mean = False):
         print(ex)
 
 '''
+arr = unbias(to_matrix("../data_v3/ratings_V3.csv","../data_v3/products_V3.csv"))
+#print(arr)
+for k in arr.keys():
+    print(pd.DataFrame(list(arr[k]), columns = ['item_id','rating']))'''
+
+'''
 # %%
 Function groupby_attribute
 
@@ -127,8 +133,3 @@ def groupby_attribute(filepath_rating, filepath_product, attribute):
     df_join = df_join.groupby(attribute)
     return df_join
 
-'''
-arr = unbias(to_matrix("../data_v3/ratings_V3.csv","../data_v3/products_V3.csv"))
-#print(arr)
-for k in arr.keys():
-    print(pd.DataFrame(list(arr[k]), columns = ['item_id','rating']))'''
