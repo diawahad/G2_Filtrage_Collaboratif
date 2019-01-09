@@ -38,9 +38,6 @@ def to_matrix(filepath_rating, filepath_product):
                             values='rating')
     return df_join
 
-# %%
-
-
 '''
 Function to_dict
 
@@ -97,3 +94,5 @@ def unbias(df, axis=0, mean=False):
 
     return scale(df)
 
+=======
+>>>>>>> Stashed changes
