@@ -39,9 +39,6 @@ def to_matrix(filepath_rating, filepath_product):
                             values='rating')
     return df_join
 
-# %%
-
-
 '''
 Function to_dict
 
@@ -53,7 +50,7 @@ The function transforms the ratings and the products files to a dictionary :
     values : set of (products,rate) tuples
 '''
 
-
+#%%
 def to_dict(filepath_rating, filepath_product):
     df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
     df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
@@ -65,10 +62,10 @@ def to_dict(filepath_rating, filepath_product):
                             values='rating')
     d_users_rates = {}
     for i in df_join.index:
-        s_users = set()
+        s_users = list()
         for j in df_join.columns:
             if not np.isnan(df_join[j][i]):
-                s_users.add((j, int(df_join[j][i])))
+                s_users.append((j, int(df_join[j][i])))
         d_users_rates[i] = s_users
     return d_users_rates
 
@@ -111,3 +108,28 @@ arr = unbias(to_matrix("../data_v3/ratings_V3.csv","../data_v3/products_V3.csv")
 #print(arr)
 for k in arr.keys():
     print(pd.DataFrame(list(arr[k]), columns = ['item_id','rating']))'''
+
+'''
+# %%
+Function groupby_attribute
+
+Input :
+    filepath_rating : csv rating file path (text)
+    filepath_product : csv product file path (text)
+    attribute : attribute name chosen for the group by (text)
+Ouput :
+    DataFrameGroupBy object group by the attribute
+The function return a DataGroupBy object depending on the input attribute.
+To produce a result, we can apply an aggregate to this DataFrameGroupBy object,
+which will perform the appropriate apply/combine steps to produce the desired
+result.
+'''
+
+
+def groupby_attribute(filepath_rating, filepath_product, attribute):
+    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
+    df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
+    df_join = pd.merge(df_rating, df_prod)
+    df_join = df_join.groupby(attribute)
+    return df_join
+
