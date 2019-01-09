@@ -8,6 +8,7 @@ Group 2
 
 import pandas as pd
 import numpy as np
+from math import isnan
 from tqdm import tqdm
 from sklearn.preprocessing import scale
 
@@ -85,19 +86,25 @@ The function centers and reduces the given dataframe, item by item
 Ignores missing  values
 '''
 
-
-def unbias(df, axis=0, mean=False):
-    if axis != 0:
-        df = df.T
-    if mean:
-        df = df.fillna(5.5)
-
-    return scale(df)
-
-# %%
-
+def unbias(df, axis = 0,mean = False):
+    try:
+        if axis == 1:
+            df = df.T
+        elif axis != 0:
+            raise Exception('axis', 'Axis has only two possible values 0 and 1')
+        if mean:
+            df = df.fillna(5.5) 
+        columns = df.columns
+        dico = {}
+        for col in columns:
+            index = df[col][df[col].notna()].index
+            dico[col] = set(zip(index, scale(df[col][index])))
+        return dico
+    except Exception as ex:
+        print(ex)
 
 '''
+# %%
 Function groupby_attribute
 
 Input :
@@ -120,5 +127,8 @@ def groupby_attribute(filepath_rating, filepath_product, attribute):
     df_join = df_join.groupby(attribute)
     return df_join
 
-# %%
- 
+'''
+arr = unbias(to_matrix("../data_v3/ratings_V3.csv","../data_v3/products_V3.csv"))
+#print(arr)
+for k in arr.keys():
+    print(pd.DataFrame(list(arr[k]), columns = ['item_id','rating']))'''
