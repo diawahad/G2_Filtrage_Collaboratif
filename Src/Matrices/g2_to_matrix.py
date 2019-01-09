@@ -89,11 +89,17 @@ Ignores missing  values
 '''
 
 
-def unbias(df, axis=0, mean=False):
-    if axis != 0:
-        df = df.T
-    if mean:
-        df = df.fillna(5.5)
-
-    return scale(df)
-
+def unbias(df, axis = 0):
+    try:
+        if axis == 1:
+            dt = df.T
+        elif axis != 0:
+            raise Exception('axis', 'Axis has only two possible values 0 and 1')
+        columns = df.columns
+        dico = {}
+        for col in columns:
+            index = df[col][df[col].notna()].index
+            dico[col] = list(zip(index, preprocessing.scale(df[col][index])))
+        return dico
+    except Exception as ex:
+        print(ex)
