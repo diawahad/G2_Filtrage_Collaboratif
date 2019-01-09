@@ -8,6 +8,7 @@ Group 2
 
 import pandas as pd
 import numpy as np
+from math import isnan
 from tqdm import tqdm
 from sklearn.preprocessing import scale
 
@@ -88,6 +89,11 @@ The function centers and reduces the given dataframe, item by item
 Ignores missing  values
 '''
 
+def unbias(df,axis = 0, mean = False):
+    if axis !=0:
+        df = df.T
+    if mean:
+        df = df.fillna(5.5) 
 
 def unbias(df, axis = 0):
     try:
@@ -103,3 +109,4 @@ def unbias(df, axis = 0):
         return dico
     except Exception as ex:
         print(ex)
+
