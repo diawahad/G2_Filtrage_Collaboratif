@@ -9,13 +9,13 @@ group 2
 
 import pandas as pd
 import numpy as np
-from g2_to_matrix import to_matrix 
+from g2_to_matrix import to_matrix
 from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
 from sklearn.metrics.pairwise import cosine_similarity
 
-dic = to_dict("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
-mat = to_matrix("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
+dictionnaire = to_dict("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
+matrice = to_matrix("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
 
 '''
 Function calculcosin_mat
@@ -29,27 +29,28 @@ The function calcul similarity cosinus between users :
     values : Similarity between us
 '''
 
-def calculcosin_mat(u,v):
-    df0 = pd.concat([pd.Series(x) for x in [u,v]], axis=1)
-    df1 = df0.dropna()
-    if (len(df1)== 1 ):
+def calculcosin_mat(user1,user2):
+    dataframe0 = pd.concat([pd.Series(x) for x in [user1,user2]], axis=1)
+    dataframe1 = dataframe0.dropna()
+    if (len(dataframe1) == 1 ):
         val = 1
     else:
-        val = cosine(df1[0].values , df1[1].values )
+        val = cosine(dataframe1[0].values , dataframe1[1].values )
     return(val)
 
 def similarity_user_user_mat(matrice_centree):
     variables = matrice_centree.index
     size = matrice_centree.shape[0]
     mat = np.zeros((size,size))
-    for i,v in enumerate (variables):
-        for j,k in enumerate (variables):
-            mat[i,j] = calculcosin_mat(matrice_centree.transpose()[v].values, matrice_centree.transpose()[k].values)
-            if(v == k):
-                mat[i,j] = 0
+    for indice1, iter1 in enumerate (variables):
+        for indice2, iter2 in enumerate (variables):
+            if(indice2 > indice1):
+                value = calculcosin_mat(matrice_centree.transpose()[iter1].values, matrice_centree.transpose()[iter2].values)
+                mat[indice1 , indice2] = value
+                mat[indice2, indice1] = value
     return (pd.DataFrame(mat,index=matrice_centree.index,columns=matrice_centree.index))
 
-print(similarity_user_user_mat(mat))
+print(similarity_user_user_mat(matrice))
 
 '''
 Function calculcosin_dic
@@ -63,29 +64,30 @@ The function calcul similarity cosinus between users :
     values : Similarity between us
 '''
 
-def calculcosin_dic (u,v):
-    df1 = pd.merge(u,v, on= 'item_id')
-    if (len(df1)== 1 ):
+def calculcosin_dic (user1, user2):
+    dataframe1 = pd.merge(user1, user2, on = 'item_id')
+    if (len(dataframe1) == 1 ):
         val = 1
     else:
-        val = cosine(df1['rating_x'].values , df1['rating_y'].values )
+        val = cosine(dataframe1['rating_x'].values , dataframe1['rating_y'].values )
     return(val)
 
 def similarity_user_user_dic(dico):
     variables = dico.keys()
     size = len(variables)
-    mat = np.zeros((size,size))
-    for i,v in enumerate (variables):
-        for j,k in enumerate (variables):
-            valk= pd.DataFrame(list(dico[k]), columns = ['item_id','rating'])
-            valv=pd.DataFrame(list(dico[v]), columns = ['item_id','rating'])
-            mat[i,j] = calculcosin_dic(valk, valv)
-            if(v == k):
-                mat[i,j] = 0
-    return (pd.DataFrame(mat,index=dico.keys(),columns=dico.keys()))
+    dic = np.zeros((size,size))
+    for indice1, iter1 in enumerate (variables):
+        for indice2, iter2 in enumerate (variables):
+            if(iter1 > iter2):
+                valeur_iter2 = pd.DataFrame(list(dico[iter2]), columns = ['item_id','rating'])
+                valeur_iter1 = pd.DataFrame(list(dico[iter1]), columns = ['item_id','rating'])
+                value = calculcosin_dic(valeur_iter2, valeur_iter1)
+                dic[indice1, indice2] = value
+                dic[indice2, indice1] = value
+    return (pd.DataFrame(dic,index=dico.keys(),columns=dico.keys()))
 
-# print(cosine_similarity(df.dropna().transpose()))   
-# sim = cosine_similarity(df1)
-# print(sim)
+# print(cosine_similarity(dataframe.dropna().transpose()))
+# similarity = cosine_similarity(dataframe1)
+# print(similarity)
 
-print(similarity_user_user_dic(dic))
+print(similarity_user_user_dic(dictionnaire))
