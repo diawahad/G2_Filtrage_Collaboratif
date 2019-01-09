@@ -101,7 +101,7 @@ def unbias(df, axis = 0,mean = False):
         dico = {}
         for col in columns:
             index = df[col][df[col].notna()].index
-            dico[col] = list(zip(index, preprocessing.scale(df[col][index])))
+            dico[col] = list(zip(index, scale(df[col][index])))
         return dico
     except Exception as ex:
         print(ex)
