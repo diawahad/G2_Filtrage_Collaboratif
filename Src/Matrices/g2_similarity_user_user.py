@@ -78,7 +78,7 @@ def similarity_user_user_dic(dico):
     dic = np.zeros((size,size))
     for indice1, iter1 in enumerate (variables):
         for indice2, iter2 in enumerate (variables):
-            if(iter1 > iter2):
+            if(indice2 > indice1):
                 valeur_iter2 = pd.DataFrame(list(dico[iter2]), columns = ['item_id','rating'])
                 valeur_iter1 = pd.DataFrame(list(dico[iter1]), columns = ['item_id','rating'])
                 value = calculcosin_dic(valeur_iter2, valeur_iter1)
