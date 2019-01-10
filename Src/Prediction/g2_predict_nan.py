@@ -28,18 +28,16 @@ The function predicts the NANs from the notes of the closest users
 
 '''
 
-def predit_df(df, distance):
-    user = df.index
+def predit_df(df, distance, k):
     dfold = df.copy()
     dfnew = df.copy()
-    for u in user:
-        ukkn = kkn(u, distance)
-        for uv in ukkn:
-            index = dfnew.loc[u, dfnew.loc[u].isna()].index
-            if len(index) == 0:
-                break
-            else:
-                dfnew.loc[u, index] = dfold.loc[uv, index]
+    for u in dfnew.index:
+        ukkn = knn(u, distance)
+        index = dfnew.loc[u, dfnew.loc[u].isna()].index
+        if len(index) > 0:
+            for p in index:
+                datanotna = dfold[p][dfold[p].notna()]
+                dfnew.loc[u, p] =  np.mean(datanotna[[j for j in ukkn if j in datanotna.index]][:k])
     return dfnew
 
 def predit(df, distance):
