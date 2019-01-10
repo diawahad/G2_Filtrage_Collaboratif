@@ -24,9 +24,9 @@ def conversion_note(df,id_user,n,id_item):
 ####     DOES NOT WORK      ####
 #### ------   ---   ------- ####
 def conversion_df(df_pred,og_df):
-    df_pred = df_pred.reset_index()
+    df_pred.reset_index()
     df_n = df_pred['index']
-    tqdm.pandas()
+    tqdm.pandas(desc = 'ce que fait ma boucle')
     df_n = [ df_pred[c].progress_apply(lambda x: conversion_note(og_df,x.index,x[1:],c)) for c in df_pred.columns]
     print(df_n)
     return df_n
