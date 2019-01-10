@@ -42,6 +42,7 @@ def to_matrix(filepath_rating, filepath_product, variable='user'):
                                 values='rating')
     return df_join
 
+
 '''
 Function to_dict
 
@@ -54,7 +55,7 @@ The function transforms the ratings and the products files to a dictionary :
 '''
 
 
-def to_dict(filepath_rating, filepath_product):
+def to_dict(filepath_rating, filepath_product, variable='user'):
     df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
     df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
     df_join = pd.merge(df_rating, df_prod, on='product_id')
