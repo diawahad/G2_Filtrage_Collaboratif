@@ -28,7 +28,7 @@ The function predicts the NANs from the notes of the closest users
 
 '''
 
-def predit(df, distance):
+def predit_df(df, distance):
     user = df.index
     dfold = df.copy()
     dfnew = df.copy()
@@ -41,3 +41,12 @@ def predit(df, distance):
             else:
                 dfnew.loc[u, index] = dfold.loc[uv, index]
     return dfnew
+
+def predit(df, distance):
+    if type(df) == 'dic':
+        return predit_dic(df,distance)
+    elif type(df) == 'DataFrame':
+        return predit_df(df,distance)
+
+def predit_dic(dico, distance):
+    return dico

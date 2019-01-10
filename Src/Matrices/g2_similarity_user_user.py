@@ -14,8 +14,6 @@ from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
 from sklearn.metrics.pairwise import cosine_similarity
 
-dictionnaire = to_dict("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
-matrice = to_matrix("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
 
 '''
 Function calculcosin_mat
@@ -50,7 +48,6 @@ def similarity_user_user_mat(matrice_centree):
                 mat[indice2, indice1] = value
     return (pd.DataFrame(mat,index=matrice_centree.index,columns=matrice_centree.index))
 
-print(similarity_user_user_mat(matrice))
 
 '''
 Function calculcosin_dic
@@ -90,4 +87,8 @@ def similarity_user_user_dic(dico):
 # similarity = cosine_similarity(dataframe1)
 # print(similarity)
 
-print(similarity_user_user_dic(dictionnaire))
+#dictionnaire = to_dict("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
+#matrice = to_matrix("/home/mickael/Documents/data_v3/ratings_V3.csv","/home/mickael/Documents/data_v3/products_V3.csv")
+
+#print(similarity_user_user_dic(dictionnaire))
+#print(similarity_user_user_mat(matrice))
