@@ -13,7 +13,7 @@ The function calculates and returns the k user closest to user_id
 
 '''
 
-def kkn(id_user, distance, k = "all"):
+def knn(id_user, distance, k = "all"):
     return distance[id_user].sort_values().index[1: int(k)+1 if  k != "all" else len(distance)]
 
 
@@ -28,7 +28,7 @@ The function predicts the NANs from the notes of the closest users
 
 '''
 
-def predit_df(df, distance, k):
+def predit_df(df, distance, k = 'all'):
     dfold = df.copy()
     dfnew = df.copy()
     for u in dfnew.index:
@@ -40,10 +40,11 @@ def predit_df(df, distance, k):
                 dfnew.loc[u, p] =  np.mean(datanotna[[j for j in ukkn if j in datanotna.index]][:k])
     return dfnew
 
+
 def predit(df, distance):
-    if type(df) == 'dic':
+    if isinstance(df, dict):
         return predit_dic(df,distance)
-    elif type(df) == 'DataFrame':
+    elif isinstance(df, pd.DataFrame):
         return predit_df(df,distance)
 
 def predit_dic(dico, distance):
