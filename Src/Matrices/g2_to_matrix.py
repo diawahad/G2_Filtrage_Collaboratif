@@ -110,7 +110,7 @@ for k in arr.keys():
     print(pd.DataFrame(list(arr[k]), columns = ['item_id','rating']))'''
 
 '''
-# %%
+#%%
 Function groupby_attribute
 
 Input :
