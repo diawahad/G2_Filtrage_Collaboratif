@@ -178,4 +178,3 @@ def groupby_attribute(filepath_rating, filepath_product, attribute):
     df_join = pd.merge(df_rating, df_prod)
     df_join = df_join.groupby(attribute)
     return df_join
-
