@@ -11,6 +11,8 @@ import numpy as np
 from math import isnan
 from tqdm import tqdm
 from sklearn.preprocessing import scale
+import csv
+import unicodedata
 
 # %%
 
@@ -155,27 +157,123 @@ arr = unbias(to_matrix("../data_v3/ratings_V3.csv","../data_v3/products_V3.csv"
 for k in arr.keys():
     print(pd.DataFrame(list(arr[k]), columns = ['item_id','rating']))'''
 
-'''
+
 #%%
-Function groupby_attribute
+
+'''
+Function categories_of_movies
 
 Input :
     filepath_rating : csv rating file path (text)
-    filepath_product : csv product file path (text)
-    attribute : attribute name chosen for the group by (text)
 Ouput :
     DataFrameGroupBy object group by the attribute
-The function return a DataGroupBy object depending on the input attribute.
-To produce a result, we can apply an aggregate to this DataFrameGroupBy object,
-which will perform the appropriate apply/combine steps to produce the desired
-result.
+The function return a matrix moviesXcategories. When a movie belongs to a
+certain categorie, we put the value 1 in the related slot instead of a 0.
 '''
 
 
-def groupby_attribute(filepath_rating, filepath_product, attribute):
-    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
-    df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
+def categories_of_movies(filepath_product):
+    df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    s = df_prod[df_prod['subtype_id'] == 1.0]
+    v = s['genres']
+    indice = s['product_id'].values
+    ind = [int(i) for i in indice]
+
+    list_categories = list_genre(filepath_product)
+    mat_c = np.zeros((len(v), len(list_categories)))
+    for i in tqdm(range(len(v))):
+        for j in range(len(list_categories)):
+            if (str(v[i]) in str(list_categories[j])):
+                mat_c[i][j] += 1
+
+    df = pd.DataFrame(mat_c, index=ind, columns=list_categories)
+    df.insert(0, 'product_id', df.index)
+    df = df.set_index(np.arange(0, len(df.index)))
+
+    return df
+
+categories_of_movies("/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
+
+# %%
+
+'''
+Function list_genre
+
+Input :
+    filepath_rating : csv rating file path (text)
+Ouput :
+    List with all the categories of movies
+The function return a list that includes all the differents categories of
+movies.
+'''
+
+
+def list_genre(filepath_product):
+    df_product = pd.read_csv(filepath_product, header=0, sep=";")
+    df_product = df_product.loc[df_product['subtype_id'] == 1.0]
+#    df_product = df_product.loc[:, ['genres']]
+    list_genres = []
+    for i in df_product['genres']:
+        if (type(i) == str):
+            r = i.split(',')
+            for j in r:
+                if j not in list_genres:
+                    list_genres.append(j)
+    list_genres.sort()
+    return list_genres
+
+# %%
+# Juste Vrai Bon Exact Correct Valide
+
+
+def to_FPN(filepath_rating, filepath_product, k):
+    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e5))
+    df_prod = pd.read_csv(filepath_product, header=0, sep=";")
     df_join = pd.merge(df_rating, df_prod)
-    df_join = df_join.groupby(attribute)
+    df_join = df_join.loc[:, ['product_id', 'rating', 'subtype_id']]
+    df_join = df_join.groupby(['product_id', 'subtype_id'],
+                              as_index=False)['rating'].count()
+    df_join = df_join.rename(columns={"rating": "rating_count"})
+    df_join = df_join.sort_values(by='rating_count', ascending=False)
+    df_join = df_join.head(k)
     return df_join
+
+
+FPN = to_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
+             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv",
+             100)
+
+
+# %%
+# Juste Vrai Bon Exact Correct Valide
+
+
+def to_merge_FPN(filepath_rating, FPN, modalite):
+    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e5))
+    df_merge = pd.merge(df_rating, FPN, on='product_id', how='left')
+    df_merge = df_merge.loc[df_merge['subtype_id'] == modalite]
+    df_merge = df_merge.loc[:, ['product_id', 'rating_count', 'subtype_id']]
+    df_merge = df_merge.rename(columns={"subtype_id": "modalite"})
+    df_merge = df_merge.groupby(['product_id', 'modalite'],
+                                as_index=False)['rating_count'].count()
+    df_merge = df_merge.sort_values(by='rating_count', ascending=False)
+    return df_merge
+
+
+to_merge_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
+             FPN, 1.0)
+
+
+# %%
+
+def to_merge_FPG(filepath_rating, filepath_product):
+    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
+    df_fpg = categories_of_movies(filepath_product)
+    df_rating = df_rating.loc[:, ['user_id', 'product_id', 'rating']]
+    df_merge = pd.merge(df_rating, df_fpg, on='product_id', how='inner')
+    return df_merge
+
+
+to_merge_FPG("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
+             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
 
