@@ -141,7 +141,7 @@ Ignores missing  values
 
 def unbias(df, axis=0, mean=False):
     try:
-        if axis == 1:
+        if axis == 0:
             df = df.T
         elif axis != 0:
             raise Exception('axis',

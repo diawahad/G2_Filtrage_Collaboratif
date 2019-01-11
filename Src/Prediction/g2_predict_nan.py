@@ -1,4 +1,5 @@
 import numpy as np
+from tqdm import tqdm
 
 '''
 Function kkn
@@ -32,11 +33,11 @@ The function predicts the NANs from the notes of the closest users
 def predit_df(df, distance, k = 10):
     dfold = df.copy()
     dfnew = df.copy()
-    for u in dfnew.index:
+    for u in tqdm(dfnew.index, desc = 'Predit: Computing k-nearestr neighbors'):
         ukkn = knn(u, distance)
         index = dfnew.loc[u, dfnew.loc[u].isna()].index
         if len(index) > 0:
-            for p in index:
+            for p in tqdm(index, desc = 'Predit: Finding and replacing NaN values'):
                 datanotna = dfold[p][dfold[p].notna()]
                 dfnew.loc[u, p] = np.mean(datanotna[[
                         j for j in ukkn if j in datanotna.index]][:k])
@@ -51,4 +52,17 @@ def predit(df, distance):
 
 
 def predit_dic(dico, distance):
-    return dico
+    #converts dictionnaries set into dict of dict-arrays
+    un_gradez = {keys: [{v[0]:v[1]}for v in list(values)] for keys, values in un_grades.items()}
+    #creates a dataset with user_id as index and n columns where n is max length of array
+    df_un = pd.DataFrame.from_dict(un_gradez, orient='index')
+    #convert the dict in the cells into columns
+    cool = df_un.columns
+    for c in cool:
+        df_un = pd.concat([df_un.drop([c], axis=1), df_un[c].apply(pd.Series)], axis=1)
+
+    #groups same name columns together
+    def sjoin(x): return next((item for item in x if (item is not None and not np.isnan(item) )), np.nan)
+    tqdm.pandas(desc = "predit_dic: Grouping columns together")
+    df_un = df_un.groupby(level=0, axis=1).progress_apply(lambda x: x.apply(sjoin, axis=1))
+    return predit_df(df_un,distance)

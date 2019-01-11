@@ -9,6 +9,7 @@ group 2
 
 import pandas as pd
 import numpy as np
+from tqdm import tqdm
 from g2_to_matrix import to_matrix
 from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
@@ -86,8 +87,8 @@ def similarity_user_user_dic(dico):
     variables = dico.keys()
     size = len(variables)
     dic = np.zeros((size, size))
-    for indice1, iter1 in enumerate(variables):
-        for indice2, iter2 in enumerate(variables):
+    for indice1, iter1 in enumerate(tqdm(variables)):
+        for indice2, iter2 in enumerate(tqdm(variables)):
             if(indice2 > indice1):
                 valeur_iter2 = pd.DataFrame(list(dico[iter2]),
                                             columns=['item_id', 'rating'])
