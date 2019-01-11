@@ -309,3 +309,54 @@ def ratings_categories_movies(filepath_rating, filepath_product):
 
 # to_merge_FPG("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
 #             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
+
+# %%
+
+'''
+Function note_film_genre
+
+Input :
+    filepath_rating : csv rating file path
+    filepath_product : csv product file path
+
+Ouput :
+    DataFrame object group by the gender
+
+The function return a matrix moviesXcategories. When a movie belongs to a
+certain categorie, we put the corresponding rating in the related slot instead 
+of a 1.
+'''
+    
+def note_film_genre(filepath_rating, filepath_product):
+    df_fpg = ratings_categories_movies(filepath_rating, filepath_product)
+    genres = list(df_fpg.columns.values[3:42])
+    for i in df_fpg.index:
+        for j in genres:
+            if df_fpg[j][i]==1.0:
+                df_fpg[j][i]=FPG['rating'][i]
+    return df_fpg
+
+
+'''
+Function moy_note_film_genre
+
+Input :
+    filepath_rating : csv rating file path
+    filepath_product : csv product file path
+
+Ouput :
+    DataFrame with the mean rating for all the movies genders
+
+The function return a DataFrame with the mean rating of an user for the 
+corresponding gender.
+'''
+
+def moy_note_film_genre(filepath_rating, filepath_product):
+    df_fpg = note_film_genre(filepath_rating, filepath_product)
+    df_fpg[df_fpg==0.0] = np.nan
+    df_fpg = df_fpg.groupby(['user_id']).mean()
+    df_fpg = df_fpg.drop(columns=['product_id', 'rating'])
+    df_fpg = df_fpg.fillna(0.0)
+    return df_fpg
+
+# df_fpg.to_csv("C:/Users/chach/OneDrive/Documents/SID/M1/Projet/filmpargenre.csv")
