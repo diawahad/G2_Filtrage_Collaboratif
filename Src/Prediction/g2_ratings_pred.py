@@ -30,3 +30,21 @@ def conversion_df(df_pred,og_df):
     df_n = [ df_pred[c].progress_apply(lambda x: conversion_note(og_df,x.index,x[1:],c)) for c in df_pred.columns]
     print(df_n)
     return df_n
+
+
+'''
+Function recalculate
+
+Input : - df DataFrame 
+        - dfunbias Dtaframe with predict score 
+Output : - Dataframe
+the function returns a DataFrame containing the scores with the original scale  
+'''
+
+def recalculate(df, dfunbias):
+    mean = lambda c : df[c][df[c].notna()].mean()
+    std = lambda c: df[c][df[c].notna()].std(ddof = 0)
+    dfunbiascopy = dfunbias.copy()
+    for c in dfunbiascopy.columns:
+        dfunbiascopy[c] = dfunbiascopy[c] * std(c) + mean(c)
+    return dfunbiascopy
