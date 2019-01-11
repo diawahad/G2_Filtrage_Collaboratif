@@ -259,13 +259,11 @@ def most_rated_movies(filepath_rating, filepath_product, modalite, k):
                               as_index=False)['rating'].count()
     df_join = df_join.rename(columns={"rating": "rating_count"})
     df_join = df_join.sort_values(by='rating_count', ascending=False)
-    FPN = df_join.head(k)
-
 
 # FPN = to_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
 #             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv",
 #             100)
-
+# FPN = df_join.head(k)
 
 # %%
 # Juste Vrai Bon Exact Correct Valide
