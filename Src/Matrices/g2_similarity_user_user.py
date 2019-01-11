@@ -15,10 +15,8 @@ from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
 from sklearn.metrics.pairwise import cosine_similarity
 
-#dictionnaire = to_dict("/home/mickael/Documents/data_v3/ratings_V3.csv",
-#                       "/home/mickael/Documents/data_v3/products_V4.csv")
-#matrice = to_matrix("/home/mickael/Documents/data_v3/ratings_V3.csv",
-#                    "/home/mickael/Documents/data_v3/products_V4.csv")
+dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
 
 '''
 Function calculcosin_mat
