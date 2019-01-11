@@ -225,6 +225,9 @@ def categories_movies(filepath_product):
     return df
 
 
+# categories_of_movies(
+#        "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
+
 # %%
 
 '''
@@ -258,6 +261,18 @@ def most_rated_movies(filepath_rating, filepath_product, modalite, k):
     df_join = df_join.sort_values(by='rating_count', ascending=False)
     FPN = df_join.head(k)
 
+
+# FPN = to_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
+#             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv",
+#             100)
+
+
+# %%
+# Juste Vrai Bon Exact Correct Valide
+
+
+def to_merge_FPN(filepath_rating, FPN, modalite):
+    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e5))
     df_merge = pd.merge(df_rating, FPN, on='product_id', how='left')
     df_merge = df_merge.loc[df_merge['subtype_id'] == modalite]
     df_merge = df_merge.loc[:, ['product_id', 'rating_count', 'subtype_id']]
@@ -268,7 +283,8 @@ def most_rated_movies(filepath_rating, filepath_product, modalite, k):
     return df_merge
 
 
-# %%
+# to_merge_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
+#             FPN, 1.0)
 
 '''
 Function ratings_categories_movies
@@ -292,3 +308,6 @@ def ratings_categories_movies(filepath_rating, filepath_product):
     df_merge = pd.merge(df_rating, df_fpg, on='product_id', how='inner')
     return df_merge
 
+
+# to_merge_FPG("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
+#             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
