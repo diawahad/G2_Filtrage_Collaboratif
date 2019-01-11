@@ -29,7 +29,7 @@ The function predicts the NANs from the notes of the closest users
 
 '''
 
-def predit_df(df, distance, k = 'all'):
+def predit_df(df, distance, k = 10):
     dfold = df.copy()
     dfnew = df.copy()
     for u in dfnew.index:
