@@ -14,6 +14,7 @@ from g2_to_matrix import to_matrix
 from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
 from g2_similarity_user_user import similarity_user_user_dic
+from g2_predict_nan import predit
 
 from g2_similarity_user_user import similarity_user_user_mat
 sys.path.append("../Matrices")
@@ -48,7 +49,7 @@ The function calculates the k number of centers for our clustering
 
 def find_centers(filepath_rating, filepath_product, k, value, modalite):
     df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
-    df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e4))
     df_join = pd.merge(df_rating, df_prod)
     df_join = df_join.loc[df_join['subtype_id'] == modalite]
     if (value == 'item'):
@@ -144,10 +145,28 @@ def add_classes(filepath, dico_class, something_id):
                                     as_index=False)['rating'].mean()
     return(df_merge)
 
+
+def add_classes_user(df, dico_class, something_id='user_id'):
+    dfdico = pd.DataFrame({'Cluster2': [np.nan], something_id: [np.nan]})
+    for v in dico_class.keys():
+        if dico_class[v]:
+            df2 = pd.DataFrame(list(dico_class[v]), columns=['Cluster2',
+                               something_id])
+            frames = [dfdico, df2]
+            dfdico = pd.concat(frames)
+    df_merge = pd.merge(dfdico, df, on=something_id, how='left')
+    df_merge = df_merge.groupby(['Cluster', 'Cluster2'],
+                                as_index=False)['rating'].mean()
+    return(df_merge)
+
+
 prod = "/home/alexis/Documents/M2 SID/Sid Critique/data_v3/products_V4.csv"
 rate = "/home/alexis/Documents/M2 SID/Sid Critique/data_v3/ratings_V3.csv"
-fpn = find_centers(rate,prod,5,'item',1.0)
-distance = similarity_user_user_dic(to_dict(rate,prod,'item'))
-cl = make_clusters(fpn,distance,'product_id')
-df = add_classes(rate,cl,'product_id')
-
+fpn = find_centers(rate, prod, 5, 'item', 1.0)
+distance = similarity_user_user_dic(to_dict(rate, prod, 'item'))
+cl = make_clusters(fpn, distance, 'product_id')
+df = add_classes(rate, cl, 'product_id')
+fpn = find_centers(rate, prod, 3, 'user', 1.0)
+distance = similarity_user_user_dic(to_dict(rate, prod, 'user'))
+cl = make_clusters(fpn, distance, 'user_id')
+df = add_classes_user(df, cl, 'user_id')

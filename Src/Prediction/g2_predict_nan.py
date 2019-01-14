@@ -67,3 +67,4 @@ def predit(df, distance):
         return predit_df(df_un,distance)
     elif isinstance(df, pd.DataFrame):
         return predit_df(df,distance)
+    

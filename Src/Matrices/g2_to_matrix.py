@@ -32,7 +32,7 @@ The function transforms the ratings and the products files to a matrix :
 
 def to_matrix(filepath_rating, filepath_product, variable='user'):
     df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
-    df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e4))
     df_join = pd.merge(df_rating, df_prod, on='product_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
@@ -64,7 +64,7 @@ The function transforms the ratings and the products files to a dictionary :
 
 def to_dict(filepath_rating, filepath_product, variable='user'):
     df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
-    df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e4))
     df_join = pd.merge(df_rating, df_prod, on='product_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
