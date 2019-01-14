@@ -16,14 +16,16 @@ from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
 from sklearn.metrics.pairwise import cosine_similarity
 
-vr = input("Version ratings? (please type int)")
-ratings_path = os.getcwd()+"/data_v"+vr+"/ratings_V"+vr+".csv"
-
-vp = input("Version products? (please type int)")
-products_path = os.getcwd()+"/data_v"+vp+"/products_V"+vp+".csv"
-
-dictionnaire = to_dict(ratings_path ,products_path)
-matrice = to_matrix(ratings_path,products_path)
+#dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+#matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+#vr = input("Version ratings? (please type int)")
+#ratings_path = os.getcwd()+"/data_v"+vr+"/ratings_V"+vr+".csv"
+#
+#vp = input("Version products? (please type int)")
+#products_path = os.getcwd()+"/data_v"+vp+"/products_V"+vp+".csv"
+#
+#dictionnaire = to_dict(ratings_path ,products_path)
+#matrice = to_matrix(ratings_path,products_path)
 
 '''
 Function calculcosin_mat
@@ -63,7 +65,7 @@ def similarity_user_user_mat(matrice_centree):
                          columns=matrice_centree.index))
 
 
-#print(similarity_user_user_mat(matrice))
+# print(similarity_user_user_mat(matrice))
 
 '''
 Function calculcosin_dic
@@ -93,7 +95,7 @@ def similarity_user_user_dic(dico):
     size = len(variables)
     dic = np.zeros((size, size))
     for indice1, iter1 in enumerate(tqdm(variables)):
-        for indice2, iter2 in enumerate(tqdm(variables)):
+        for indice2, iter2 in enumerate(variables):
             if(indice2 > indice1):
                 valeur_iter2 = pd.DataFrame(list(dico[iter2]),
                                             columns=['item_id', 'rating'])
@@ -109,4 +111,4 @@ def similarity_user_user_dic(dico):
 # print(similarity)
 
 
-#print(similarity_user_user_dic(dictionnaire))
+#  print(similarity_user_user_dic(dictionnaire))
