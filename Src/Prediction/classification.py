@@ -8,17 +8,23 @@ Created on Thu Jan 10 14:53:00 2019
 import pandas as pd
 import numpy as np
 import sys
-from predict_nan import kkn
+from g2_predict_nan import knn
 
 from g2_to_matrix import to_matrix
 from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
-from g2_similarity_user_user import similarity_user_user_dic as usrnan
+from g2_similarity_user_user import similarity_user_user_dic
+
 from g2_similarity_user_user import similarity_user_user_mat
 sys.path.append("../Matrices")
-dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
-matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
-matuser = usrnan(dictionnaire)
+#dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+#matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+#matuser = usrnan(dictionnaire)
+
+#dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+#matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+#matuser = usrnan(dictionnaire)
+
 
 # %%
 
@@ -65,6 +71,9 @@ def find_centers(filepath_rating, filepath_product, k, value, modalite):
 
 # %%
 
+# FPN = find_centers("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.
+# csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv",
+#             5, 'user', 1.0)
 
 '''
 Function make_clusters
@@ -90,7 +99,7 @@ def make_clusters(FPN, distance, value):
         if v in t:
             dico[v].add((v, v))
         else:
-            liste = kkn(v, distance, k="all")
+            liste = knn(v, distance, k="all")
             for i, j in enumerate(liste):
                 if j in t:
                     dico[j].add((j, v))
@@ -121,19 +130,24 @@ def add_classes(filepath, dico_class, something_id):
     dfdico = pd.DataFrame({'Cluster': [np.nan], something_id: [np.nan]})
     df = pd.read_csv(filepath, header=0, sep=";", nrows=int(1e3))
     for v in dico_class.keys():
-        if not dico_class[v].empty:
+        if dico_class[v]:
             df2 = pd.DataFrame(list(dico_class[v]), columns=['Cluster',
                                something_id])
             frames = [dfdico, df2]
             dfdico = pd.concat(frames)
     df_merge = pd.merge(dfdico, df, on=something_id, how='left')
-    df_merge = df_merge.groupby([something_id, 'Cluster'],
-                                as_index=False)['rating'].mean()
+    if (something_id == 'product_id'):
+        df_merge = df_merge.groupby(['user_id', 'Cluster'],
+                                    as_index=False)['rating'].mean()
+    else:
+        df_merge = df_merge.groupby(['product_id', 'Cluster'],
+                                    as_index=False)['rating'].mean()
     return(df_merge)
 
-prod = "C:/Users/alice/Documents/SID/S1/G2_ Projet/donnees/products_V4.csv"
-rate = "C:/Users/alice/Documents/SID/S1/G2_ Projet/donnees/ratings_V3.csv"
-fpn = find_centers(rate,prod,5,'user',1.0)
-distance = similarity_user_user_mat(to_matrix(rate,prod))
-cl = make_clusters(fpn,distance,'user_id')
-df = add_classes(rate,cl,'user_id')
+prod = "/home/alexis/Documents/M2 SID/Sid Critique/data_v3/products_V4.csv"
+rate = "/home/alexis/Documents/M2 SID/Sid Critique/data_v3/ratings_V3.csv"
+fpn = find_centers(rate,prod,5,'item',1.0)
+distance = similarity_user_user_dic(to_dict(rate,prod,'item'))
+cl = make_clusters(fpn,distance,'product_id')
+df = add_classes(rate,cl,'product_id')
+
