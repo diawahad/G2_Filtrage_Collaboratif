@@ -10,13 +10,20 @@ group 2
 import pandas as pd
 import numpy as np
 from tqdm import tqdm
+import os
 from g2_to_matrix import to_matrix
 from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
 from sklearn.metrics.pairwise import cosine_similarity
 
-dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
-matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
+vr = input("Version ratings? (please type int)")
+ratings_path = os.getcwd()+"/data_v"+vr+"/ratings_V"+vr+".csv"
+
+vp = input("Version products? (please type int)")
+products_path = os.getcwd()+"/data_v"+vp+"/products_V"+vp+".csv"
+
+dictionnaire = to_dict(ratings_path ,products_path)
+matrice = to_matrix(ratings_path,products_path)
 
 '''
 Function calculcosin_mat

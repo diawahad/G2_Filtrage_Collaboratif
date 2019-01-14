@@ -1,5 +1,6 @@
 import numpy as np
 from tqdm import tqdm
+import pandas as pd
 
 '''
 Function kkn
@@ -22,7 +23,7 @@ def knn(id_user, distance, k="all"):
 '''
 Function predit
 
-Input : - df DataFrame
+Input : - df DataFrame or dictionary of sets of tuple (item,rating)
         - distance
 Output : df DataFrame predit
 
@@ -33,7 +34,7 @@ The function predicts the NANs from the notes of the closest users
 def predit_df(df, distance, k = 10):
     dfold = df.copy()
     dfnew = df.copy()
-    for u in tqdm(dfnew.index, desc = 'Predit: Computing k-nearestr neighbors'):
+    for u in tqdm(dfnew.index, desc = 'Predit: Computing k-nearest neighbors'):
         ukkn = knn(u, distance)
         index = dfnew.loc[u, dfnew.loc[u].isna()].index
         if len(index) > 0:
@@ -43,17 +44,9 @@ def predit_df(df, distance, k = 10):
                         j for j in ukkn if j in datanotna.index]][:k])
     return dfnew
 
-
-def predit(df, distance):
-    if isinstance(df, dict):
-        return predit_dic(df,distance)
-    elif isinstance(df, pd.DataFrame):
-        return predit_df(df,distance)
-
-
-def predit_dic(dico, distance):
+def dic_to_df(dico):
     #converts dictionnaries set into dict of dict-arrays
-    un_gradez = {keys: [{v[0]:v[1]}for v in list(values)] for keys, values in un_grades.items()}
+    un_gradez = {keys: [{v[0]:v[1]}for v in list(values)] for keys, values in dico.items()}
     #creates a dataset with user_id as index and n columns where n is max length of array
     df_un = pd.DataFrame.from_dict(un_gradez, orient='index')
     #convert the dict in the cells into columns
@@ -64,5 +57,13 @@ def predit_dic(dico, distance):
     #groups same name columns together
     def sjoin(x): return next((item for item in x if (item is not None and not np.isnan(item) )), np.nan)
     tqdm.pandas(desc = "predit_dic: Grouping columns together")
-    df_un = df_un.groupby(level=0, axis=1).progress_apply(lambda x: x.apply(sjoin, axis=1))
-    return predit_df(df_un,distance)
+    return df_un.groupby(level=0, axis=1).progress_apply(lambda x: x.apply(sjoin, axis=1))
+    
+
+
+def predit(df, distance):
+    if isinstance(df, dict):
+        df_un = dic_to_df(df)
+        return predit_df(df_un,distance)
+    elif isinstance(df, pd.DataFrame):
+        return predit_df(df,distance)
