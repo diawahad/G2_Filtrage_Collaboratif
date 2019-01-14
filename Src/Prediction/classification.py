@@ -18,6 +18,9 @@ dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.
 matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
 matuser = usrnan(dictionnaire)
 
+# %%
+
+
 '''
 Function find_centers
 
@@ -40,50 +43,60 @@ def find_centers(filepath_rating, filepath_product, k, value, modalite):
     df_prod = pd.read_csv(filepath_product, header=0, sep=";")
     df_join = pd.merge(df_rating, df_prod)
     df_join = df_join.loc[df_join['subtype_id'] == modalite]
-    if (value== 'item'):
+    if (value == 'item'):
         df_join = df_join.loc[:, ['product_id', 'rating', 'subtype_id']]
         df_join = df_join.groupby(['product_id', 'subtype_id'],
                                   as_index=False)['rating'].count()
     else:
         df_join = df_join.loc[:, ['user_id', 'rating']]
         df_join = df_join.groupby(['user_id'],
-                              as_index=False)['rating'].count()
+                                  as_index=False)['rating'].count()
     df_join = df_join.rename(columns={"rating": "rating_count"})
     df_join = df_join.sort_values(by='rating_count', ascending=False)
     df_join = df_join.head(k)
     return df_join
 
 
-FPN = find_centers("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv",
-             5, 'user', 1.0)
+# FPN = find_centers("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3
+# .csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv",
+#            5, 'user', 1.0)
+
+# %%
+
 
 '''
 Function make_clusters
 
 Input : - value as user_id or product_id
-        - user/user or item/item matrix got by calling similarity_user_user_dic function
+        - user/user or item/item matrix got by calling similarity_user_user_dic
+            function
         - k number of centers got by calling find_centers
-Output : dictionnary clusters 
 
-The function calculates the nearest cluster of our centers and puts the user or item into this clustering set
+Output : dictionnary clusters
 
+The function calculates the nearest cluster of our centers and puts the user or
+item into this clustering set
     keys : centers'id
     sets : user_id or item_id
 '''
 
-def make_clusters (FPN, distance, value):
-    dico = {x : set() for x in FPN[value].values}
+
+def make_clusters(FPN, distance, value):
+    dico = {x: set() for x in FPN[value].values}
     for v in (distance.index):
         t = dico.keys()
-        if v in t : 
-            dico[v].add((v,v))
+        if v in t:
+            dico[v].add((v, v))
         else:
-            liste=  kkn(v, distance, k = "all")
-            for i,j in enumerate(liste):
+            liste = kkn(v, distance, k="all")
+            for i, j in enumerate(liste):
                 if j in t:
-                    dico[j].add((j,v))
-                    break;
+                    dico[j].add((j, v))
+                    break
     return dico
+
+# %%
+
 
 '''
 Function add_classes
@@ -91,27 +104,27 @@ Function add_classes
 Input : - csv rating or product file path
         - dictionnary of clusters got by calling make_clusters
         - value as user_id or product_id
-        
+
 Output : User_id /centers matrix
 
-The function calculates the mean of the ratings of users from the same clustering
+The function calculates the mean of the ratings of users from the same
+clustering
     rows: user_id
     columns : centers'id
     values : mean of ratings
 '''
 
+
 def add_classes(filepath, dico_class, something_id):
-    dfdico = pd.DataFrame({'Cluster': [np.nan] , something_id: [np.nan]})
+    dfdico = pd.DataFrame({'Cluster': [np.nan], something_id: [np.nan]})
     df = pd.read_csv(filepath, header=0, sep=";", nrows=int(1e3))
     for v in dico_class.keys():
-        if (dico_class[v].empty == False) :
-            df2 = pd.DataFrame(list(dico_class[v]), columns = ['Cluster',something_id])
+        if not dico_class[v].empty:
+            df2 = pd.DataFrame(list(dico_class[v]), columns=['Cluster',
+                               something_id])
             frames = [dfdico, df2]
             dfdico = pd.concat(frames)
-    df_merge = pd.merge(dfdico, df, on='user_id', how='left')
+    df_merge = pd.merge(dfdico, df, on=something_id, how='left')
     df_merge = df_merge.groupby([something_id, 'Cluster'],
                                 as_index=False)['rating'].mean()
     return(df_merge)
-        
-    
-            
