@@ -9,11 +9,13 @@ import pandas as pd
 import numpy as np
 import sys
 from predict_nan import kkn
-sys.path.append("../Matrices")
+
 from g2_to_matrix import to_matrix
 from g2_to_matrix import to_dict
 from scipy.spatial.distance import cosine
 from g2_similarity_user_user import similarity_user_user_dic as usrnan
+from g2_similarity_user_user import similarity_user_user_mat
+sys.path.append("../Matrices")
 dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
 matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
 matuser = usrnan(dictionnaire)
@@ -128,3 +130,10 @@ def add_classes(filepath, dico_class, something_id):
     df_merge = df_merge.groupby([something_id, 'Cluster'],
                                 as_index=False)['rating'].mean()
     return(df_merge)
+
+prod = "C:/Users/alice/Documents/SID/S1/G2_ Projet/donnees/products_V4.csv"
+rate = "C:/Users/alice/Documents/SID/S1/G2_ Projet/donnees/ratings_V3.csv"
+fpn = find_centers(rate,prod,5,'user',1.0)
+distance = similarity_user_user_mat(to_matrix(rate,prod))
+cl = make_clusters(fpn,distance,'user_id')
+df = add_classes(rate,cl,'user_id')
