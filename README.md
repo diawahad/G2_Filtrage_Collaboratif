@@ -3,10 +3,11 @@
 <img src="https://www.senscritique.com/senscritique.png" width="100" align="left"/>-->
 
 <img align="left" width="100" src="http://departement-math.univ-tlse3.fr/medias/photo/logosidbigdata_1518444334675-png?ID_FICHE=301126">
+<img align="left" width="100" src="https://upload.wikimedia.org/wikipedia/fr/a/a4/Logo_UT3.jpg">
 <img align="right" width="100" src="https://www.senscritique.com/senscritique.png">
-<p align="center">
+<!--<p align="center">
   <img width="150" src="https://upload.wikimedia.org/wikipedia/fr/a/a4/Logo_UT3.jpg">
-</p>
+</p>-->
 
 <br />
 <br />
