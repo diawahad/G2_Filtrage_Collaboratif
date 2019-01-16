@@ -17,4 +17,8 @@ Le principal objectif de notre groupe "filtrage collaboratif" est de pouvoir pr�
 Pour mener à bien notre projet, nous disposons tout d'abord du répertoire "Qualité" contenant la charte de codage à appliquer dans nos programmes.
 <br />
 De plus, nous disposons également du répertoire "Biblios" comportant notamment des documents/aides sur le langage python et sur les systèmes de recommandation.
+<br />
+Nous avons aussi créé le répertoire "Rapport" qui contient le diagramme de Gantt de notre projet, ainsi que les 2 rapports à rendre : l'un pour Sens Critique et l'autre pour les enseignants.
+<br />
+Enfin, le dernier répertoire "Src" se divise en 2 sous-répertoires : "Matrices" et "Prédiction" contenant nos codes python.
 </h4>
