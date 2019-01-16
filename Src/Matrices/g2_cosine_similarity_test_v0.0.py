@@ -7,12 +7,13 @@ from g2_to_matrix import to_matrix
 from g2_to_matrix import unbias
 from g2_to_matrix import to_dict
 
-filepath_rating='/home/mickael/Documents/data_v3/ratings_V3.csv'
-filepath_product='/home/mickael/Documents/data_v3/products_V3.csv'
+filepath_rating = '/home/mickael/Documents/data_v3/ratings_V3.csv'
+filepath_product = '/home/mickael/Documents/data_v3/products_V3.csv'
+
 
 def cosinus_similarity(matrice):
     matrice = to_matrix(filepath_rating, filepath_product)
-    matrice = unbias(matrice, axis = 1, mean = True)
+    matrice = unbias(matrice, axis=1, mean=True)
     return(cosine_similarity(matrice))
 
 
@@ -28,20 +29,22 @@ b = np.array([float("NaN"),7,9,2,5,9,5,7])
 df = pd.concat([pd.Series(x) for x in [a,b]], axis=1)
 '''
 
-def calculcosin (u,v):
-    df0 = pd.concat([pd.Series(x) for x in [u,v]], axis=1)
+
+def calculcosin(u, v):
+    df0 = pd.concat([pd.Series(x) for x in [u, v]], axis=1)
     df1 = df0.dropna()
-    return(cosine(df1[0].values , df1[1].values))
+    return(cosine(df1[0].values, df1[1].values))
+
 
 def similarity_user_user(matrice_centree):
     df = matrice_centree
     variables = df.index
     size = df.shape[0]
-    mat = np.zeros((size,size))
-    for i,v in enumerate (variables):
-        for j,k in enumerate (variables):
-            mat[i,j] = calculcosin(df.transpose()[v].values, df.transpose()[k].values)
-    return (pd.DataFrame(mat,index=df.index,columns=df.index))
+    mat = np.zeros((size, size))
+    for i, v in enumerate(variables):
+        for j, k in enumerate(variables):
+            mat[i, j] = calculcosin(df.transpose()[v].values, df.transpose()[k].values)
+    return (pd.DataFrame(mat, index=df.index, columns=df.index))
 
 print(similarity_user_user(df))
 
