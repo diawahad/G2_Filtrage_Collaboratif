@@ -1,3 +1,11 @@
+"""
+Created on Tue Jan  8 09:27:59 2019
+
+group 2
+@author: Moustapha S, Serigne D, Paul L, Fallou B, Ismail H.
+
+"""
+
 import numpy as np
 from tqdm import tqdm
 import pandas as pd
@@ -67,4 +75,11 @@ def predit(df, distance):
         return predit_df(df_un,distance)
     elif isinstance(df, pd.DataFrame):
         return predit_df(df,distance)
-    
+
+def recalculate(df, dfunbias):
+    mean = lambda c : df[c][df[c].notna()].mean()
+    std = lambda c: df[c][df[c].notna()].std(ddof = 0)
+    dfunbiascopy = dfunbias.copy()
+    for c in dfunbiascopy.columns:
+        dfunbiascopy[c] = dfunbiascopy[c] * std(c) + mean(c)
+    return dfunbiascopy
