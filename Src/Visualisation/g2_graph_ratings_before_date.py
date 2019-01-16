@@ -16,7 +16,7 @@ def nb_ratings_before_date(filepath_rating, nrows):
     df_cum = df_cum.reset_index()
     df_cum['date'] = pd.to_datetime(df_cum['date'])
     return df_cum
-
+'''
 fig, ax = plt.subplots()
 ax.plot(cumule.date, cumule.rating_id)
 years = mdates.YearLocator()  
@@ -33,7 +33,7 @@ ax.xaxis.set_minor_locator(months)
 plt.title("Nombre de notes cumulées par date")
 plt.xlabel('Date')
 plt.ylabel('Nombre de notes cumulées')
-plt.show()
+plt.show()'''
 
 # Graph histogramme
 
@@ -51,6 +51,7 @@ def nb_ratings_years(filepath_rating, nrows, time):
     df_rating = df_rating.reset_index()
     return df_rating
 
+'''
 plt.bar(histo['date'].apply(lambda x : str(x)) ,histo['rating_id'])
-plt.show()
+plt.show()'''
 

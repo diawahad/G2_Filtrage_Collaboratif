@@ -116,7 +116,7 @@ The function transforms the ratings and the products files to a dictionary :
 def to_2d(filepath_rating, filepath_product):
     df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
     df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
-    df_join = pd.merge(df_rating, df_prod, on='prodcut_id')
+    df_join = pd.merge(df_rating, df_prod, on='product_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
     df_join = df_join.loc[df_join['subtype_id'] == 1.0]
@@ -345,7 +345,7 @@ def note_film_genre(filepath_rating, filepath_product):
     for i in df_fpg.index:
         for j in genres:
             if df_fpg[j][i]==1.0:
-                df_fpg[j][i]=FPG['rating'][i]
+                df_fpg[j][i]=df_fpg['rating'][i]
     return df_fpg
 
 

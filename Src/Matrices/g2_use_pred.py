@@ -24,5 +24,5 @@ def item_item(filepath_ratings, filepath_products, k=1, t='matrix',
     else:
         d_item_item = to_dict(filepath_ratings, filepath_products, t_user)
         df_item_item = similarity_user_user_dic(d_item_item)
-    df_knn = predit(m_item_item, df_item_item, k)
+    df_knn = predit(m_item_item, df_item_item)
     return df_knn
