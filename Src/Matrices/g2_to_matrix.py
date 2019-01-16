@@ -151,7 +151,7 @@ Ignores missing  values
 '''
 
 
-def unbias(df, axis=0, mean=False):
+def unbias(df, axis=0, mean=False, to_df = False):
     try:
         if axis == 0:
             df = df.T
@@ -160,7 +160,9 @@ def unbias(df, axis=0, mean=False):
                             'Axis has only two possible values 0 and 1')
         if mean:
             df = df.fillna(5.5)
-        columns = df.columns
+        if to_df:
+            frame = df.apply(lambda x: (x-x.mean())/np.sqrt(x.var()) if np.sqrt(x.var()) > 0.00001 else (x-x.mean())/0.00001)
+            return frame.T
         dico = {}
         for col in columns:
             index = df[col][df[col].notna()].index
@@ -345,7 +347,7 @@ def note_film_genre(filepath_rating, filepath_product):
     for i in df_fpg.index:
         for j in genres:
             if df_fpg[j][i]==1.0:
-                df_fpg[j][i]=FPG['rating'][i]
+                df_fpg[j][i]=df_fpg['rating'][i]
     return df_fpg
 
 
