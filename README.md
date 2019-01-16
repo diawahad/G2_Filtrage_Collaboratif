@@ -1,14 +1,9 @@
-<img src="http://departement-math.univ-tlse3.fr/medias/photo/logosidbigdata_1518444334675-png?ID_FICHE=301126" width="100" align="left"/>
-<img src="https://upload.wikimedia.org/wikipedia/fr/a/a4/Logo_UT3.jpg" width="150" align="left"/>
-<img src="https://www.senscritique.com/senscritique.png" width="100" align="right"/>
+<!DOCTYPE html>
 <html>
   <head>
-    
-      <style>
-        h1 {
-          color:red;
-        }
-      </style>
+    <img src="http://departement-math.univ-tlse3.fr/medias/photo/logosidbigdata_1518444334675-png?ID_FICHE=301126" width="100" align="left"/>
+    <img src="https://upload.wikimedia.org/wikipedia/fr/a/a4/Logo_UT3.jpg" width="150" align="left"/>
+    <img src="https://www.senscritique.com/senscritique.png" width="100" align="right"/>
   </head>
   <body>
     <br />
@@ -21,7 +16,7 @@
     <br />
     <p>Sens Critique est un site internet permettant à ses utilisateurs de noter et commenter des films, séries, jeux vidéos, livres, bandes dessinées et musiques.</p>
     <br />
-    <p>Notre groupe s’est principalement concentré sur le filtrage collaboratif, c’est-à-dire pouvoir prédire la note que pourrait attribuer un utilisateur à un produit en le comparant avec d’autres personnes similaires. Pour cela, nous nous sommes répartis différentes tâches pour effectuer ce projet le plus efficacement possible.</p>
+    <p>Le principal objectif de notre groupe filtrage collaboratif est de pouvoir prédire la note d'un utilisateur à partir dees notes des utilisateurs qui lui sont similaires.</p>
   </body>
 </html>
 
