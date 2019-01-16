@@ -7,7 +7,7 @@ group 2
 """
 
 import numpy as np
-from tqdm import tqdm
+from tqdm import tqdm, tqdm_notebook
 import pandas as pd
 
 '''
@@ -39,18 +39,30 @@ The function predicts the NANs from the notes of the closest users
 
 '''
 
-def predit_df(df, distance, k = 10):
+def predit_df(df, distance, jpnb,  k):
     dfold = df.copy()
     dfnew = df.copy()
-    for u in tqdm(dfnew.index, desc = 'Predit: Computing k-nearest neighbors'):
-        ukkn = knn(u, distance)
-        index = dfnew.loc[u, dfnew.loc[u].isna()].index
-        if len(index) > 0:
-            for p in tqdm(index, desc = 'Predit: Finding and replacing NaN values'):
-                datanotna = dfold[p][dfold[p].notna()]
-                dfnew.loc[u, p] = np.mean(datanotna[[
-                        j for j in ukkn if j in datanotna.index]][:k])
+    if jpnb:
+        for u in tqdm_notebook(dfnew.index, desc = 'Predit: Computing k-nearest neighbors'):
+            ukkn = knn(u, distance)
+            index = dfnew.loc[u, dfnew.loc[u].isna()].index
+            if len(index) > 0:
+                for p in tqdm_notebook(index, desc = 'Predit: Finding and replacing NaN values'):
+                    datanotna = dfold[p][dfold[p].notna()]
+                    dfnew.loc[u, p] = np.mean(datanotna[[
+                            j for j in ukkn if j in datanotna.index]][:k])
+    else:
+        for u in tqdm(dfnew.index, desc = 'Predit: Computing k-nearest neighbors'):
+            ukkn = knn(u, distance)
+            index = dfnew.loc[u, dfnew.loc[u].isna()].index
+            if len(index) > 0:
+                for p in tqdm(index, desc = 'Predit: Finding and replacing NaN values'):
+                    datanotna = dfold[p][dfold[p].notna()]
+                    dfnew.loc[u, p] = np.mean(datanotna[[
+                            j for j in ukkn if j in datanotna.index]][:k])
     return dfnew
+    
+    
 
 def dic_to_df(dico):
     #converts dictionnaries set into dict of dict-arrays
@@ -69,10 +81,10 @@ def dic_to_df(dico):
     
 
 
-def predit(df, distance):
+def predit(df, distance, jpnb = False, k = 10):
     if isinstance(df, dict):
         df_un = dic_to_df(df)
-        return predit_df(df_un,distance)
+        return predit_df(df_un,distance, jpnb, k)
     elif isinstance(df, pd.DataFrame):
         return predit_df(df,distance)
 
