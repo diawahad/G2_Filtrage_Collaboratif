@@ -2,7 +2,6 @@
 Created on Mon Jan  7 15:33:15 2019
 
 @author: Group 2 !
-
 """
 # coding: utf-8
 
@@ -18,10 +17,19 @@ from sklearn.preprocessing import scale
 '''
 Function to_matrix
 
-Input : - csv rating file path
-        - csv products file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv products file path
+        - variable : to choose between the matrix user/product or product/user
+        (default : 'user')
+        - modality (float) : - Movie : 1.0 (default : 1.0)
+                             - Book : 2.0
+                             - Serie : 4.0
+        - rating_rows : number of the rows of the file rating to read
+        (default : 1e3)
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
 
-Output : User/Products Rating Matrix for movies
+Output : User/Products Rating Matrix
 
 The function transforms the ratings and the products files to a matrix :
     rows : users
@@ -30,23 +38,26 @@ The function transforms the ratings and the products files to a matrix :
 '''
 
 
-def to_matrix(filepath_rating, filepath_product, variable='user', modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
-    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+def to_matrix(filepath_rating, filepath_product, variable='user',
+              modality=1.0, rating_rows=1e3, prod_rows=1e5):
+    if isinstance(rating_rows, int) or isinstance(rating_rows, float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";",
+                                nrows=int(rating_rows))
     else:
         df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
-    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
-        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
+    if isinstance(prod_rows, int) or isinstance(prod_rows, float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";",
+                              nrows=int(1e5))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
-    
-    if (isinstance(modality,int) or isinstance(modality,float)):
+
+    if (isinstance(modality, int) or isinstance(modality, float)):
         df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
-    
+
     df_join = pd.merge(df_rating, df_prod, on='product_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
-    
+
     if variable == 'user':
         df_join = df_join.pivot(index='user_id', columns='product_id',
                                 values='rating')
@@ -61,10 +72,19 @@ def to_matrix(filepath_rating, filepath_product, variable='user', modality=1.0, 
 '''
 Function to_dict
 
-Input : - csv rating file path
-        - csv products file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv products file path
+        - variable : to choose between the matrix user/product or product/user
+        (default : 'user')
+        - modality (float) : - Movie : 1.0 (default : 1.0)
+                             - Book : 2.0
+                             - Serie : 4.0
+        - rating_rows : number of the rows of the file rating to read
+        (default : 1e3)
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
 
-Output : User/Products Rating dictionary for movies
+Output : User/Products Rating dictionary
 
 The function transforms the ratings and the products files to a dictionary :
     key : users
@@ -72,20 +92,22 @@ The function transforms the ratings and the products files to a dictionary :
 '''
 
 
-def to_dict(filepath_rating, filepath_product, variable='user', modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
-    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+def to_dict(filepath_rating, filepath_product, variable='user',
+            modality=1.0, rating_rows=1e3, prod_rows=1e5):
+    if isinstance(rating_rows, int) or isinstance(rating_rows, float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";",
+                                nrows=int(rating_rows))
     else:
         df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
-    
-    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
-        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+    if isinstance(prod_rows, int) or isinstance(prod_rows, float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";",
+                              nrows=int(1e5))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
-    
-    if (isinstance(modality,int) or isinstance(modality,float)):
+
+    if (isinstance(modality, int) or isinstance(modality, float)):
         df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
-    
+
     df_join = pd.merge(df_rating, df_prod, on='product_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
@@ -108,6 +130,7 @@ def to_dict(filepath_rating, filepath_product, variable='user', modality=1.0, ra
 # %%
 
 '''
+<<<<<<< HEAD
 Function to_2d
 
 Input : - csv rating file path
@@ -160,63 +183,66 @@ def to_2d(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, pr
 # %%
 
 '''
+=======
+>>>>>>> master
 Function unbias
 
-Input :
-    df - DataFrame to be unbiased
-    axis - 0 by default, if any other value Transposes the dataframe
+Input : - df : DataFrame to be unbiased
+        - axis : 0 by default, if any other value Transposes the dataframe
         to unbias by user instead of items
-    mean - False by default, replaces missing values with 5.5 which is
+        - mean : False by default, replaces missing values with 5.5 which is
         the median value in the Sens Critique rating system
+        - to_df : to choose between a dictionary or a DataFrame
+        (default : False)
 
 Output: Unbiased matrix
 
-The function centers and reduces the given dataframe, item by item
-Ignores missing  values
+The function centers and reduces the given dataframe, item by item.
+Ignores missing values.
 '''
 
 
-def unbias(df, axis = 0, to = "dico"):
+def unbias(df, axis=0, mean=False, to_df=False):
     try:
-        if axis == 1:
-            dt = df.T
-        elif axis != 0:
-            raise Exception('axis', 'Axis has only two possible values 0 and 1')
+        if axis == 0:
+            df = df.T
+        elif axis != 1:
+            raise Exception('axis',
+                            'Axis has only two possible values 0 and 1')
+        if mean:
+            df = df.fillna(5.5)
+        if to_df:
+            df = df.apply(lambda x: (x-x.mean())/np.sqrt(
+                    x.var()) if np.sqrt(x.var()) > 0.00001 else (
+                            x-x.mean())/0.00001)
+            return df.T
+        dico = {}
         columns = df.columns
-        if to == "dico":
-            result = {}
-            for col in columns:
-                index = df[col][df[col].notna()].index
-                if (len(index)>0):
-                    result[col] = list(zip(index, preprocessing.scale(df[col][index])))
-        else:
-            result = df.copy()
-            for col in columns:
-                index = df[col][df[col].notna()].index
-                if (len(index)>0):
-                    result[col][index] = preprocessing.scale(df[col][index])
-        return result   
+        for col in columns:
+            index = df[col][df[col].notna()].index
+            dico[col] = set(zip(index, scale(df[col][index])))
+        return dico
     except Exception as ex:
         print(ex)
 
 # %%
 
+
 '''
 Function list_genre
 
-Input :
-    filepath_rating : csv rating file path
+Input : - filepath_rating : csv rating file path
 
-Ouput :
-    List with all the categories of movies
+Ouput : List with all the categories of movies
 
-The function return a list that includes all the differents categories of
-movies.
+The function returns a list that include all the differents categories of
+products.
 '''
 
 
-def list_genre(filepath_product, modality=1.0, prod_rows = 1e5):
-    df_product = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+def list_genre(filepath_product, modality=1.0, prod_rows=1e5):
+    df_product = pd.read_csv(filepath_product, header=0, sep=";",
+                             nrows=int(prod_rows))
     df_product = df_product.loc[df_product['subtype_id'] == modality]
     list_genres = []
     for i in df_product['genres']:
@@ -234,23 +260,27 @@ def list_genre(filepath_product, modality=1.0, prod_rows = 1e5):
 '''
 Function categories_of_movies
 
-Input :
-    filepath_rating : csv rating file path
+Input : - filepath_product : csv product file path
+        - modality (float) : - Movie : 1.0 (default : 1.0)
+                             - Book : 2.0
+                             - Serie : 4.0
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
 
-Ouput :
-    DataFrame object group by the attribute
+Ouput : DataFrame object group by the attribute
 
 The function return a matrix moviesXcategories. When a movie belongs to a
 certain categorie, we put the value 1 in the related slot instead of a 0.
 '''
 
 
-def categories_movies(filepath_product, modality=1.0, prod_rows = 1e5):
-    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
-        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+def categories_movies(filepath_product, modality=1.0, prod_rows=1e5):
+    if isinstance(prod_rows, int) or isinstance(prod_rows, float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";",
+                              nrows=int(prod_rows))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
-    
+
     s = df_prod[df_prod['subtype_id'] == modality]
     v = s['genres']
     indice = s['product_id'].values
@@ -270,42 +300,43 @@ def categories_movies(filepath_product, modality=1.0, prod_rows = 1e5):
     return df
 
 
-# categories_of_movies(
-#        "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
-
 # %%
 
 '''
-Function most_rated_movies
+Function most_rated_items
 
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
-    modalite (float) : - Movie : 1.0
-                       - Book : 2.0
-                       - Serie : 4.0
-    k (integer) : The k first rows of the DataFrame (Ex : 100)
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
+        - modality (float) : - Movie : 1.0 (default)
+                             - Book : 2.0
+                             - Serie : 4.0
+        - rating_rows : number of the rows of the file rating to read
+        (default : 1e3)
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
 
-Ouput :
-    DataFrame with product_id, subtype_id(modality), rating_count
+Ouput : DataFrame with product_id, subtype_id(modality), rating_count
 
-The function return a DataFrame with the number of ratings and the subtype of
+The function returns a DataFrame with the number of ratings and the subtype of
 the k first most rated products.
 '''
 
 
-def most_rated_items(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5, k=1):
-    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+def most_rated_items(filepath_rating, filepath_product, modality=1.0,
+                     rating_rows=1e3, prod_rows=1e5):
+    if isinstance(rating_rows, int) or isinstance(rating_rows, float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";",
+                                nrows=int(rating_rows))
     else:
         df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
-    
-    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
-        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+
+    if isinstance(prod_rows, int) or isinstance(prod_rows, float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";",
+                              nrows=int(prod_rows))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
-    
-    if (isinstance(modality,int) or isinstance(modality,float)):
+
+    if (isinstance(modality, int) or isinstance(modality, float)):
         df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
 
     df_join = pd.merge(df_rating, df_prod)
@@ -314,114 +345,101 @@ def most_rated_items(filepath_rating, filepath_product, modality=1.0, rating_row
                               as_index=False)['rating'].count()
     df_join = df_join.rename(columns={"rating": "rating_count"})
     df_join = df_join.sort_values(by='rating_count', ascending=False)
+    return df_join
 
-# FPN = to_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
-#             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv",
-#             100)
-# FPN = df_join.head(k)
 
 # %%
-# Juste Vrai Bon Exact Correct Valide
-
-
-def to_merge_most_rated_items(filepath_rating, most_rated_items, modality=1.0, rating_rows = 1e3):
-    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
-    else:
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
-    
-    df_merge = pd.merge(df_rating, most_rated_items, on='product_id', how='left')
-    if (isinstance(modality,int) or isinstance(modality,float)):
-        df_merge = df_merge.loc[df_merge['subtype_id'] == modality]
-    
-    df_merge = df_merge.loc[:, ['product_id', 'rating_count', 'subtype_id']]
-    df_merge = df_merge.rename(columns={"subtype_id": "modality"})
-    df_merge = df_merge.groupby(['product_id', 'modality'],
-                                as_index=False)['rating_count'].count()
-    df_merge = df_merge.sort_values(by='rating_count', ascending=False)
-    return df_merge
-
-
-# to_merge_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
-#             FPN, 1.0)
 
 '''
 Function ratings_categories_movies
 
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
+        - modality (float) : - Movie : 1.0 (default)
+                             - Book : 2.0
+                             - Serie : 4.0
+        - rating_rows : number of the rows of the file rating to read
+        (default : 1e3)
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
 
-Ouput :
-    DataFrame with user_id, product_id, rating, categories
+Ouput : DataFrame with user_id, product_id, rating, categories
 
-The function return a DataFrame with the rating of an user for a movie
+The function returns a DataFrame with the rating of an user for a product
 describes by its categories.
 '''
 
 
-def ratings_categories_movies(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
-    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+def ratings_categories_movies(filepath_rating, filepath_product, modality=1.0,
+                              rating_rows=1e3, prod_rows=1e5):
+    if isinstance(rating_rows, int) or isinstance(rating_rows, float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";",
+                                nrows=int(rating_rows))
     else:
         df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
-    
+
     df_fpg = categories_movies(filepath_product, modality, prod_rows)
     df_rating = df_rating.loc[:, ['user_id', 'product_id', 'rating']]
     df_merge = pd.merge(df_rating, df_fpg, on='product_id', how='inner')
     return df_merge
 
 
-# to_merge_FPG("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
-#             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
+# %%
+
+'''
+Function rating_categories
+
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
+        - modality (float) : - Movie : 1.0 (default)
+                             - Book : 2.0
+                             - Serie : 4.0
+        - rating_rows : number of the rows of the file rating to read
+        (default : 1e3)
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
+
+Ouput : DataFrame User/Product/Rating/Categories
+
+The function returns a DataFrame . When a products belongs to a
+certain categorie, we put the corresponding rating in the related slot instead
+of a 1.
+'''
+
+
+def rating_categories(filepath_rating, filepath_product, modality=1.0,
+                      rating_rows=1e3, prod_rows=1e5):
+    df_fpg = ratings_categories_movies(filepath_rating, filepath_product,
+                                       modality, rating_rows, prod_rows)
+    genres = list(df_fpg.columns.values[3:42])
+    for i in df_fpg.index:
+        for j in genres:
+            if df_fpg[j][i] == 1.0:
+                df_fpg[j][i] = df_fpg['rating'][i]
+    return df_fpg
+
 
 # %%
 
 '''
-Function note_film_genre
+Function mean_ratings_categories
 
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
+        - modality (float) : - Movie : 1.0 (default)
+                             - Book : 2.0
+                             - Serie : 4.0
 
-Ouput :
-    DataFrame object group by the gender
+Ouput : DataFrame with the mean rating given by an user for each categories
 
-The function return a matrix moviesXcategories. When a movie belongs to a
-certain categorie, we put the corresponding rating in the related slot instead 
-of a 1.
-'''
-    
-def note_film_genre(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
-    df_fpg = ratings_categories_movies(filepath_rating, filepath_product, modality, rating_rows, prod_rows)
-    genres = list(df_fpg.columns.values[3:42])
-    for i in df_fpg.index:
-        for j in genres:
-            if df_fpg[j][i]==1.0:
-                df_fpg[j][i]=df_fpg['rating'][i]
-    return df_fpg
-
-
-'''
-Function moy_note_film_genre
-
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
-
-Ouput :
-    DataFrame with the mean rating for all the movies genders
-
-The function return a DataFrame with the mean rating of an user for the 
-corresponding gender.
+The function returns a DataFrame with the mean rating of an user for the
+each categories.
 '''
 
-def moyenne_note_film_genre(filepath_rating, filepath_product, modality=1.0):
-    df_fpg = note_film_genre(filepath_rating, filepath_product, modality)
-    df_fpg[df_fpg==0.0] = np.nan
+
+def mean_rating_categories(filepath_rating, filepath_product, modality=1.0):
+    df_fpg = rating_categories(filepath_rating, filepath_product, modality)
+    df_fpg[df_fpg == 0.0] = np.nan
     df_fpg = df_fpg.groupby(['user_id']).mean()
     df_fpg = df_fpg.drop(columns=['product_id', 'rating'])
-    #df_fpg = df_fpg.fillna(0.0)
     return df_fpg
-
-# df_fpg.to_csv("C:/Users/chach/OneDrive/Documents/SID/M1/Projet/filmpargenre.csv")
