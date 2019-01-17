@@ -328,6 +328,10 @@ def to_merge_most_rated_items(filepath_rating, most_rated_items, modality=1.0, r
     if (isinstance(modality,int) or isinstance(modality,float)):
         df_merge = df_merge.loc[df_merge['subtype_id'] == modality]
     
+=======
+    df_merge = pd.merge(df_rating, FPN, on='product_id', how='left')
+    df_merge = df_merge.loc[df_merge['subtype_id'] == modalite]
+>>>>>>> Stashed changes
     df_merge = df_merge.loc[:, ['product_id', 'rating_count', 'subtype_id']]
     df_merge = df_merge.rename(columns={"subtype_id": "modality"})
     df_merge = df_merge.groupby(['product_id', 'modality'],
@@ -336,8 +340,7 @@ def to_merge_most_rated_items(filepath_rating, most_rated_items, modality=1.0, r
     return df_merge
 
 
-# to_merge_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
-#             FPN, 1.0)
+# %%
 
 '''
 Function ratings_categories_movies
@@ -362,6 +365,7 @@ def ratings_categories_movies(filepath_rating, filepath_product, modality=1.0, r
     df_rating = df_rating.loc[:, ['user_id', 'product_id', 'rating']]
     df_merge = pd.merge(df_rating, df_fpg, on='product_id', how='inner')
     return df_merge
+<<<<<<< Updated upstream
 
 
 # %%
