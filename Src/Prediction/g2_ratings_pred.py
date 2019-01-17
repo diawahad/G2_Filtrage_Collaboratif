@@ -14,7 +14,7 @@ the function returns a DataFrame containing the scores with the original scale
 def recalculate(df, dfunbias):
     mean = lambda c : df[c][df[c].notna()].mean()
     std = lambda c: df[c][df[c].notna()].std(ddof = 0)
-    dfunbiascopy = dfunbias.copy()
-    for c in tqdm(dfunbiascopy.columns, desc = 'Recalculate: Removing Bias' ):
-        dfunbiascopy[c] = round(dfunbiascopy[c] * std(c) + mean(c)).astype(int)
-    return dfunbiascopy
+
+    for c in tqdm(dfunbias.columns, desc = 'Recalculate: Removing Bias' ):
+        dfunbias[c] = round(dfunbias[c] * std(c) + mean(c)).astype(int)
+    return dfunbias
