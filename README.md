@@ -14,7 +14,7 @@ Sens Critique est un site internet permettant à ses utilisateurs de noter et co
 Le principal objectif de notre groupe "filtrage collaboratif" est de pouvoir prédire la note d'un utilisateur à partir des notes des utilisateurs qui lui sont similaires.
 <br />
 <br />
-Pour mener à bien notre projet, nous disposons tout d'abord du répertoire "Qualité" contenant la charte de codage à appliquer dans nos programmes.
+Pour mener à bien notre projet, nous disposons tout d'abord du répertoire "Qualité" contenant la charte de codage à respecter dans nos programmes.
 <br />
 De plus, nous disposons également du répertoire "Biblios" comportant notamment des documents/aides sur le langage python et sur les systèmes de recommandation.
 <br />
