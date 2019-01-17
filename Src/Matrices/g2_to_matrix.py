@@ -169,26 +169,24 @@ Ignores missing  values
 '''
 
 
-def unbias(df, axis = 0, to = "dico"):
+def unbias(df, axis=0, mean=False, to_df = False):
     try:
-        if axis == 1:
-            dt = df.T
-        elif axis != 0:
-            raise Exception('axis', 'Axis has only two possible values 0 and 1')
+        if axis == 0:
+            df = df.T
+        elif axis != 1:
+            raise Exception('axis',
+                            'Axis has only two possible values 0 and 1')
+        if mean:
+            df = df.fillna(5.5)
+        if to_df:
+            df = df.apply(lambda x: (x-x.mean())/np.sqrt(x.var()) if np.sqrt(x.var()) > 0.00001 else (x-x.mean())/0.00001)
+            return df.T
+        dico = {}
         columns = df.columns
-        if to == "dico":
-            result = {}
-            for col in columns:
-                index = df[col][df[col].notna()].index
-                if (len(index)>0):
-                    result[col] = list(zip(index, preprocessing.scale(df[col][index])))
-        else:
-            result = df.copy()
-            for col in columns:
-                index = df[col][df[col].notna()].index
-                if (len(index)>0):
-                    result[col][index] = preprocessing.scale(df[col][index])
-        return result   
+        for col in columns:
+            index = df[col][df[col].notna()].index
+            dico[col] = set(zip(index, scale(df[col][index])))
+        return dico
     except Exception as ex:
         print(ex)
 
