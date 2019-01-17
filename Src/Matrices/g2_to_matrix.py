@@ -48,10 +48,14 @@ def to_matrix(filepath_rating, filepath_product, variable='user',
                               nrows=int(1e5))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    
+    if (isinstance(modality,int) or isinstance(modality,float)):
+        df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
+    
     df_join = pd.merge(df_rating, df_prod, on='product_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
-    df_join = df_join.loc[df_join['subtype_id'] == 1.0]
+    
     if variable == 'user':
         df_join = df_join.pivot(index='user_id', columns='product_id',
                                 values='rating')
@@ -95,10 +99,13 @@ def to_dict(filepath_rating, filepath_product, variable='user',
                               nrows=int(1e5))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    
+    if (isinstance(modality,int) or isinstance(modality,float)):
+        df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
+    
     df_join = pd.merge(df_rating, df_prod, on='product_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
-    df_join = df_join.loc[df_join['subtype_id'] == 1.0]
     if variable == 'user':
         df_join = df_join.pivot(index='user_id', columns='product_id',
                                 values='rating')
@@ -131,13 +138,23 @@ The function transforms the ratings and the products files to a dictionary :
 '''
 
 
-def to_2d(filepath_rating, filepath_product):
-    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
-    df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
+def to_2d(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
+    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+    else:
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
+    
+    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+    else:
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    
+    if (isinstance(modality,int) or isinstance(modality,float)):
+        df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
+    
     df_join = pd.merge(df_rating, df_prod, on='prodcut_id')
     df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
                               'date_rating', 'subtype_id']]
-    df_join = df_join.loc[df_join['subtype_id'] == 1.0]
     df_join = df_join.pivot(index='user_id', columns='product_id',
                             values='rating')
     d_users_rates = {}
@@ -168,26 +185,28 @@ Ignores missing values.
 '''
 
 
-def unbias(df, axis=0, mean=False, to_df = False):
+def unbias(df, axis = 0, to = "dico"):
     try:
-        if axis == 0:
-            df = df.T
+        if axis == 1:
+            dt = df.T
         elif axis != 0:
-            raise Exception('axis',
-                            'Axis has only two possible values 0 and 1')
-        if mean:
-            df = df.fillna(5.5)
-        if to_df:
-            frame = df.apply(lambda x: (x-x.mean())/np.sqrt(x.var()) if np.sqrt(x.var()) > 0.00001 else (x-x.mean())/0.00001)
-            return frame.T
-        dico = {}
-        for col in columns:
-            index = df[col][df[col].notna()].index
-            dico[col] = set(zip(index, scale(df[col][index])))
-        return dico
+            raise Exception('axis', 'Axis has only two possible values 0 and 1')
+        columns = df.columns
+        if to == "dico":
+            result = {}
+            for col in columns:
+                index = df[col][df[col].notna()].index
+                if (len(index)>0):
+                    result[col] = list(zip(index, preprocessing.scale(df[col][index])))
+        else:
+            result = df.copy()
+            for col in columns:
+                index = df[col][df[col].notna()].index
+                if (len(index)>0):
+                    result[col][index] = preprocessing.scale(df[col][index])
+        return result   
     except Exception as ex:
         print(ex)
-
 
 # %%
 
@@ -203,9 +222,9 @@ movies.
 '''
 
 
-def list_genre(filepath_product):
-    df_product = pd.read_csv(filepath_product, header=0, sep=";")
-    df_product = df_product.loc[df_product['subtype_id'] == 1.0]
+def list_genre(filepath_product, modality=1.0, prod_rows = 1e5):
+    df_product = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+    df_product = df_product.loc[df_product['subtype_id'] == modality]
     list_genres = []
     for i in df_product['genres']:
         if (type(i) == str):
@@ -231,9 +250,13 @@ certain categorie, we put the value 1 in the related slot instead of a 0.
 '''
 
 
-def categories_movies(filepath_product):
-    df_prod = pd.read_csv(filepath_product, header=0, sep=";")
-    s = df_prod[df_prod['subtype_id'] == 1.0]
+def categories_movies(filepath_product, modality=1.0, prod_rows = 1e5):
+    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+    else:
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    
+    s = df_prod[df_prod['subtype_id'] == modality]
     v = s['genres']
     indice = s['product_id'].values
     ind = [int(i) for i in indice]
@@ -271,9 +294,19 @@ the k first most rated products.
 '''
 
 
-def most_rated_movies(filepath_rating, filepath_product, modality, k):
-    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e5))
-    df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+def most_rated_items(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5, k=1):
+    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+    else:
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
+    
+    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+    else:
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    
+    if (isinstance(modality,int) or isinstance(modality,float)):
+        df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
 
     df_join = pd.merge(df_rating, df_prod)
     df_join = df_join.loc[:, ['product_id', 'rating', 'subtype_id']]
@@ -285,6 +318,28 @@ def most_rated_movies(filepath_rating, filepath_product, modality, k):
 
 
 # %%
+
+
+def to_merge_most_rated_items(filepath_rating, most_rated_items, modality=1.0, rating_rows = 1e3):
+    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+    else:
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
+    
+    df_merge = pd.merge(df_rating, most_rated_items, on='product_id', how='left')
+    if (isinstance(modality,int) or isinstance(modality,float)):
+        df_merge = df_merge.loc[df_merge['subtype_id'] == modality]
+    
+    df_merge = df_merge.loc[:, ['product_id', 'rating_count', 'subtype_id']]
+    df_merge = df_merge.rename(columns={"subtype_id": "modality"})
+    df_merge = df_merge.groupby(['product_id', 'modality'],
+                                as_index=False)['rating_count'].count()
+    df_merge = df_merge.sort_values(by='rating_count', ascending=False)
+    return df_merge
+
+
+# to_merge_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
+#             FPN, 1.0)
 
 '''
 Function ratings_categories_movies
@@ -299,9 +354,13 @@ describes by its categories.
 '''
 
 
-def ratings_categories_movies(filepath_rating, filepath_product):
-    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
-    df_fpg = categories_movies(filepath_product)
+def ratings_categories_movies(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
+    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+    else:
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
+    
+    df_fpg = categories_movies(filepath_product, modality, prod_rows)
     df_rating = df_rating.loc[:, ['user_id', 'product_id', 'rating']]
     df_merge = pd.merge(df_rating, df_fpg, on='product_id', how='inner')
     return df_merge
@@ -321,10 +380,9 @@ The function return a matrix moviesXcategories. When a movie belongs to a
 certain categorie, we put the corresponding rating in the related slot instead
 of a 1.
 '''
-
-
-def note_film_genre(filepath_rating, filepath_product):
-    df_fpg = ratings_categories_movies(filepath_rating, filepath_product)
+    
+def note_film_genre(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
+    df_fpg = ratings_categories_movies(filepath_rating, filepath_product, modality, rating_rows, prod_rows)
     genres = list(df_fpg.columns.values[3:42])
     for i in df_fpg.index:
         for j in genres:
@@ -347,11 +405,10 @@ The function return a DataFrame with the mean rating of an user for the
 corresponding gender.
 '''
 
-
-def moy_note_film_genre(filepath_rating, filepath_product):
-    df_fpg = note_film_genre(filepath_rating, filepath_product)
-    df_fpg[df_fpg == 0.0] = np.nan
+def moyenne_note_film_genre(filepath_rating, filepath_product, modality=1.0):
+    df_fpg = note_film_genre(filepath_rating, filepath_product, modality)
+    df_fpg[df_fpg==0.0] = np.nan
     df_fpg = df_fpg.groupby(['user_id']).mean()
     df_fpg = df_fpg.drop(columns=['product_id', 'rating'])
-    df_fpg = df_fpg.fillna(0.0)
+    #df_fpg = df_fpg.fillna(0.0)
     return df_fpg

@@ -1,29 +1,28 @@
-<img src="http://departement-math.univ-tlse3.fr/medias/photo/logosidbigdata_1518444334675-png?ID_FICHE=301126" width="100" align="left"/>
-<img src="https://upload.wikimedia.org/wikipedia/fr/a/a4/Logo_UT3.jpg" width="150" align="left"/>
-<img src="https://www.senscritique.com/senscritique.png" width="100" align="right"/>
-<html>
-  <head>
-    
-      <style>
-        h1 {
-          color:red;
-        }
-      </style>
-  </head>
-  <body>
-    <br />
-    <br />
-    <br />
-    <br />
-    <h1>G2_Filtrage_Collaboratif</h1>
-    <br />
-    <p>Dans le cadre du Projet/Challenge inter-promo de la formation SID (Statistique et Informatique Décisionnelle), en partenariat avec le site Sens Critique, nous avons eu pour objectif de participer à l'améliorer de leur système de recommandation afin de proposer aux utilisateurs de meilleures suggestions de produits.</p>
-    <br />
-    <p>Sens Critique est un site internet permettant à ses utilisateurs de noter et commenter des films, séries, jeux vidéos, livres, bandes dessinées et musiques.</p>
-    <br />
-    <p>Notre groupe s’est principalement concentré sur le filtrage collaboratif, c’est-à-dire pouvoir prédire la note que pourrait attribuer un utilisateur à un produit en le comparant avec d’autres personnes similaires. Pour cela, nous nous sommes répartis différentes tâches pour effectuer ce projet le plus efficacement possible.</p>
-  </body>
-</html>
+<img align="left" width="100" src="http://departement-math.univ-tlse3.fr/medias/photo/logosidbigdata_1518444334675-png?ID_FICHE=301126">
+<img align="left" width="100" src="https://upload.wikimedia.org/wikipedia/fr/a/a4/Logo_UT3.jpg">
+<img align="right" width="100" src="https://www.senscritique.com/senscritique.png">
+<br />
+<br />
+<br />
+<h2>G2_Filtrage_Collaboratif</h2>
+<h4>Dans le cadre du Projet/Challenge inter-promo de la formation SID (Statistique et Informatique Décisionnelle), en partenariat avec le site Sens Critique, nous avons pu participer à l'amélioration de leur système de recommandation afin de proposer aux utilisateurs de meilleures suggestions de produits.
+<br />
+<br />
+Sens Critique est un site internet permettant à ses utilisateurs de noter et commenter des films, séries, jeux vidéos, livres, bandes dessinées et musiques.
+<br />
+<br />
+Le principal objectif de notre groupe "filtrage collaboratif" est de pouvoir prédire la note d'un utilisateur à partir des notes des utilisateurs qui lui sont similaires.
+<br />
+<br />
+Pour mener à bien notre projet, nous avons tout d'abord créé le répertoire "Src" qui se divise en 2 sous-répertoires : "Matrices" et "Prédiction" contenant les fichiers avec nos codes python. Ces fichiers sont composés des différentes fonctions nous permettant de réaliser les étapes allant de la lecture des données à la création de la matrice avec les notes prédites.
+
+<br />
+De plus, nous disposons également du répertoire "Biblios" comportant notamment des documents/aides sur le langage python et sur les systèmes de recommandation.
+<br />
+Nous avons aussi créé le répertoire "Rapport" qui contient le diagramme de Gantt de notre projet, ainsi que les 2 rapports à rendre : l'un pour Sens Critique et l'autre pour les enseignants.
+<br />
+Enfin, le dernier répertoire "Qualité" contient la charte de codage à respecter dans nos programmes.
+</h4>
 
 
 
