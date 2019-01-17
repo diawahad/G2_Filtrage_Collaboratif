@@ -14,11 +14,15 @@ Sens Critique est un site internet permettant à ses utilisateurs de noter et co
 Le principal objectif de notre groupe "filtrage collaboratif" est de pouvoir prédire la note d'un utilisateur à partir des notes des utilisateurs qui lui sont similaires.
 <br />
 <br />
-Pour mener à bien notre projet, nous disposons tout d'abord du répertoire "Qualité" contenant la charte de codage à respecter dans nos programmes.
+Pour mener à bien notre projet, nous avons tout d'abord créé le répertoire "Src" qui se divise en 2 sous-répertoires : "Matrices" et "Prédiction" contenant les fichiers avec nos codes python. Ces fichiers sont composés des différentes fonctions nous permettant de réaliser les étapes allant de la lecture des données à la création de la matrice avec les notes prédites.
+
 <br />
 De plus, nous disposons également du répertoire "Biblios" comportant notamment des documents/aides sur le langage python et sur les systèmes de recommandation.
 <br />
 Nous avons aussi créé le répertoire "Rapport" qui contient le diagramme de Gantt de notre projet, ainsi que les 2 rapports à rendre : l'un pour Sens Critique et l'autre pour les enseignants.
 <br />
-Enfin, le dernier répertoire "Src" se divise en 2 sous-répertoires : "Matrices" et "Prédiction" contenant nos codes python.
+Enfin, le dernier répertoire "Qualité" contient la charte de codage à respecter dans nos programmes.
 </h4>
+
+
+

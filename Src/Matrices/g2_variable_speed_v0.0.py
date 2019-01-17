@@ -1,8 +1,7 @@
 """
 Created on Tue Jan  8 10:45:59 2019
 
-Group 2
-@author: Alice A, Alexis D, Corentin L, Charlotte M, Audrey D
+@author: Group 2 !
 """
 # coding: utf-8
 

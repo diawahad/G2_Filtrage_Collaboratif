@@ -18,8 +18,14 @@ from sklearn.preprocessing import scale
 '''
 Function to_matrix
 
-Input : - csv rating file path
-        - csv products file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv products file path
+        - variable : to choose between the matrix user/product or product/user
+        (default : 'user')
+        - rating_rows : number of the rows of the file rating to read
+        (default : 1e3)
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
 
 Output : User/Products Rating Matrix for movies
 
@@ -30,13 +36,16 @@ The function transforms the ratings and the products files to a matrix :
 '''
 
 
-def to_matrix(filepath_rating, filepath_product, variable='user', modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
-    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+def to_matrix(filepath_rating, filepath_product, variable='user',
+              rating_rows=1e3, prod_rows=1e5):
+    if isinstance(rating_rows, int) or isinstance(rating_rows, float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";",
+                                nrows=int(rating_rows))
     else:
         df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
-    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
-        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
+    if isinstance(prod_rows, int) or isinstance(prod_rows, float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";",
+                              nrows=int(1e5))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
     
@@ -61,8 +70,14 @@ def to_matrix(filepath_rating, filepath_product, variable='user', modality=1.0, 
 '''
 Function to_dict
 
-Input : - csv rating file path
-        - csv products file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv products file path
+        - variable : to choose between the matrix user/product or product/user
+        (default : 'user')
+        - rating_rows : number of the rows of the file rating to read
+        (default : 1e3)
+        - prod_rows : number of the rows of the file product to read
+        (default : 1e5)
 
 Output : User/Products Rating dictionary for movies
 
@@ -72,14 +87,16 @@ The function transforms the ratings and the products files to a dictionary :
 '''
 
 
-def to_dict(filepath_rating, filepath_product, variable='user', modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
-    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
-        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+def to_dict(filepath_rating, filepath_product, variable='user',
+            rating_rows=1e3, prod_rows=1e5):
+    if isinstance(rating_rows, int) or isinstance(rating_rows, float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";",
+                                nrows=int(rating_rows))
     else:
         df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
-    
-    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
-        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+    if isinstance(prod_rows, int) or isinstance(prod_rows, float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";",
+                              nrows=int(1e5))
     else:
         df_prod = pd.read_csv(filepath_product, header=0, sep=";")
     
@@ -110,8 +127,8 @@ def to_dict(filepath_rating, filepath_product, variable='user', modality=1.0, ra
 '''
 Function to_2d
 
-Input : - csv rating file path
-        - csv products file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv products file path
 
 Output : User/Products Rating dictionary for movies
 
@@ -155,17 +172,16 @@ def to_2d(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, pr
 '''
 Function unbias
 
-Input :
-    df - DataFrame to be unbiased
-    axis - 0 by default, if any other value Transposes the dataframe
+Input : - df : DataFrame to be unbiased
+        - axis : 0 by default, if any other value Transposes the dataframe
         to unbias by user instead of items
-    mean - False by default, replaces missing values with 5.5 which is
+        - mean : False by default, replaces missing values with 5.5 which is
         the median value in the Sens Critique rating system
 
 Output: Unbiased matrix
 
-The function centers and reduces the given dataframe, item by item
-Ignores missing  values
+The function centers and reduces the given dataframe, item by item.
+Ignores missing values.
 '''
 
 
@@ -195,13 +211,11 @@ def unbias(df, axis=0, mean=False, to_df = False):
 '''
 Function list_genre
 
-Input :
-    filepath_rating : csv rating file path
+Input : - filepath_rating : csv rating file path
 
-Ouput :
-    List with all the categories of movies
+Ouput : List with all the categories of movies
 
-The function return a list that includes all the differents categories of
+The function returns a list that include all the differents categories of
 movies.
 '''
 
@@ -225,11 +239,9 @@ def list_genre(filepath_product, modality=1.0, prod_rows = 1e5):
 '''
 Function categories_of_movies
 
-Input :
-    filepath_rating : csv rating file path
+Input : - filepath_rating : csv rating file path
 
-Ouput :
-    DataFrame object group by the attribute
+Ouput : DataFrame object group by the attribute
 
 The function return a matrix moviesXcategories. When a movie belongs to a
 certain categorie, we put the value 1 in the related slot instead of a 0.
@@ -261,26 +273,21 @@ def categories_movies(filepath_product, modality=1.0, prod_rows = 1e5):
     return df
 
 
-# categories_of_movies(
-#        "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
-
 # %%
 
 '''
 Function most_rated_movies
 
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
-    modalite (float) : - Movie : 1.0
-                       - Book : 2.0
-                       - Serie : 4.0
-    k (integer) : The k first rows of the DataFrame (Ex : 100)
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
+        - modality (float) : - Movie : 1.0
+                             - Book : 2.0
+                             - Serie : 4.0
+        - k (integer) : The k first rows of the DataFrame (Ex : 100)
 
-Ouput :
-    DataFrame with product_id, subtype_id(modality), rating_count
+Ouput : DataFrame with product_id, subtype_id(modality), rating_count
 
-The function return a DataFrame with the number of ratings and the subtype of
+The function returns a DataFrame with the number of ratings and the subtype of
 the k first most rated products.
 '''
 
@@ -305,14 +312,10 @@ def most_rated_items(filepath_rating, filepath_product, modality=1.0, rating_row
                               as_index=False)['rating'].count()
     df_join = df_join.rename(columns={"rating": "rating_count"})
     df_join = df_join.sort_values(by='rating_count', ascending=False)
+    return df_join
 
-# FPN = to_FPN("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
-#             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv",
-#             100)
-# FPN = df_join.head(k)
 
 # %%
-# Juste Vrai Bon Exact Correct Valide
 
 
 def to_merge_most_rated_items(filepath_rating, most_rated_items, modality=1.0, rating_rows = 1e3):
@@ -339,12 +342,10 @@ def to_merge_most_rated_items(filepath_rating, most_rated_items, modality=1.0, r
 '''
 Function ratings_categories_movies
 
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
 
-Ouput :
-    DataFrame with user_id, product_id, rating, categories
+Ouput : DataFrame with user_id, product_id, rating, categories
 
 The function return a DataFrame with the rating of an user for a movie
 describes by its categories.
@@ -363,23 +364,18 @@ def ratings_categories_movies(filepath_rating, filepath_product, modality=1.0, r
     return df_merge
 
 
-# to_merge_FPG("/home/ddm-turing3/Bureau/SensCritique/data_v3/ratings_V3.csv",
-#             "/home/ddm-turing3/Bureau/SensCritique/data_v3/products_V4.csv")
-
 # %%
 
 '''
 Function note_film_genre
 
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
 
-Ouput :
-    DataFrame object group by the gender
+Ouput : DataFrame object group by the gender
 
 The function return a matrix moviesXcategories. When a movie belongs to a
-certain categorie, we put the corresponding rating in the related slot instead 
+certain categorie, we put the corresponding rating in the related slot instead
 of a 1.
 '''
     
@@ -389,21 +385,21 @@ def note_film_genre(filepath_rating, filepath_product, modality=1.0, rating_rows
     for i in df_fpg.index:
         for j in genres:
             if df_fpg[j][i]==1.0:
-                df_fpg[j][i]=df_fpg['rating'][i]
+                df_fpg[j][i]=FPG['rating'][i]
     return df_fpg
 
+
+# %%
 
 '''
 Function moy_note_film_genre
 
-Input :
-    filepath_rating : csv rating file path
-    filepath_product : csv product file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv product file path
 
-Ouput :
-    DataFrame with the mean rating for all the movies genders
+Ouput : DataFrame with the mean rating for all the movies genders
 
-The function return a DataFrame with the mean rating of an user for the 
+The function return a DataFrame with the mean rating of an user for the
 corresponding gender.
 '''
 
@@ -414,5 +410,3 @@ def moyenne_note_film_genre(filepath_rating, filepath_product, modality=1.0):
     df_fpg = df_fpg.drop(columns=['product_id', 'rating'])
     #df_fpg = df_fpg.fillna(0.0)
     return df_fpg
-
-# df_fpg.to_csv("C:/Users/chach/OneDrive/Documents/SID/M1/Projet/filmpargenre.csv")
