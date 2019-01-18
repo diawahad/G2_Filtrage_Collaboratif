@@ -40,7 +40,7 @@ The function returns the predicted matrix Users/Products
 
 def collaborative_filtering(filepath_rating, filepath_product, k=1,
                             t='matrix', t_user='user', modality=1.0,
-                            rating_rows=1e3, prod_rows=1e5):
+                            rating_rows=1e3, prod_rows=1e5, jpnb=False):
     matrix_user_item = to_matrix(filepath_rating, filepath_product, t_user,
                                  modality, rating_rows, prod_rows)
     matrix_user_item_scale = pd.DataFrame(scale(matrix_user_item),
@@ -62,6 +62,7 @@ def collaborative_filtering(filepath_rating, filepath_product, k=1,
                                  modality, rating_rows, prod_rows)
 >>>>>>> master
         distance = similarity_user_user_dic(matrice_creuse)
+<<<<<<< HEAD
     df_knn_CR = predit_df(matrix_user_item_scale, distance, k)
 
 <<<<<<< HEAD
@@ -85,5 +86,11 @@ prediteF = Collaborative_filtering(rate,prod,2,'matrix','user',2,1e5,'all')
 >>>>>>> master
 =======
     valpred = recalculate(matrix_user_item, df_knn_CR)
+=======
+    #df_knn = predit_df(matrix_user_item, distance, jpnb, k)
+    df_knn_CR = predit_df(matrix_user_item_scale, distance, jpnb, k)
+    
+    valpred = recalculate(matrix_user_item,df_knn_CR)
+>>>>>>> master
     return valpred
 >>>>>>> master
