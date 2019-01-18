@@ -66,7 +66,7 @@ def find_centers(filepath_rating, filepath_product, k, value='item',
 '''
 Function make_clusters
 
-Input : - FPN : find_centers
+Input : - find_centers : find_centers
         -  distance : user/user or item/item matrix got by calling
         similarity_user_user_dic function
         - value : as user_id or product_id
