@@ -18,14 +18,6 @@ from g2_predict_nan import predit
 
 from g2_similarity_user_user import similarity_user_user_mat
 sys.path.append("../Matrices")
-#dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
-#matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
-#matuser = usrnan(dictionnaire)
-
-#dictionnaire = to_dict("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
-#matrice = to_matrix("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv")
-#matuser = usrnan(dictionnaire)
-
 
 # %%
 
@@ -33,25 +25,28 @@ sys.path.append("../Matrices")
 '''
 Function find_centers
 
-Input : - csv rating file path
-        - csv products file path
-        - k number of centers
-        - value as item or user
-        - modalite as film or book etc
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv products file path
+        - k : number of centers
+        - value : as item or user (default : 'item')
+        - modality (float) : - Movie : 1.0 (default : 1.0)
+                             - Book : 2.0
+                             - Serie : 4.0
+
 Output : User_id /number of ratings of the k centers
 
 The function calculates the k number of centers for our clustering
-
     columns : user_id, rating_count
     values : ratings
 '''
 
 
-def find_centers(filepath_rating, filepath_product, k, value, modalite):
+def find_centers(filepath_rating, filepath_product, k, value='item',
+                 modality=1.0):
     df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
     df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e4))
     df_join = pd.merge(df_rating, df_prod)
-    df_join = df_join.loc[df_join['subtype_id'] == modalite]
+    df_join = df_join.loc[df_join['subtype_id'] == modality]
     if (value == 'item'):
         df_join = df_join.loc[:, ['product_id', 'rating', 'subtype_id']]
         df_join = df_join.groupby(['product_id', 'subtype_id'],
@@ -65,24 +60,16 @@ def find_centers(filepath_rating, filepath_product, k, value, modalite):
     df_join = df_join.head(k)
     return df_join
 
-
-# FPN = find_centers("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3
-# .csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv",
-#            5, 'user', 1.0)
-
 # %%
 
-# FPN = find_centers("/home/sid2018-1/Documents/projet2019/data_v3/ratings_V3.
-# csv","/home/sid2018-1/Documents/projet2019/data_v3/products_V4.csv",
-#             5, 'user', 1.0)
 
 '''
 Function make_clusters
 
-Input : - value as user_id or product_id
-        - user/user or item/item matrix got by calling similarity_user_user_dic
-            function
-        - k number of centers got by calling find_centers
+Input : - find_centers : find_centers
+        -  distance : user/user or item/item matrix got by calling
+        similarity_user_user_dic function
+        - value : as user_id or product_id
 
 Output : dictionnary clusters
 
@@ -93,8 +80,8 @@ item into this clustering set
 '''
 
 
-def make_clusters(FPN, distance, value):
-    dico = {x: set() for x in FPN[value].values}
+def make_clusters(find_centers, distance, value):
+    dico = {x: set() for x in find_centers[value].values}
     for v in (distance.index):
         t = dico.keys()
         if v in t:
@@ -113,21 +100,21 @@ def make_clusters(FPN, distance, value):
 '''
 Function add_classes
 
-Input : - csv rating or product file path
-        - dictionnary of clusters got by calling make_clusters
-        - value as user_id or product_id
+Input : - filepath : csv rating or product file path
+        - dico_class : dictionnary of clusters got by calling make_clusters
+        - something_id : value as user_id or product_id (default : 'user_id')
 
-Output : User_id /centers matrix
+Output : User_id/centers matrix
 
 The function calculates the mean of the ratings of users from the same
 clustering
     rows: user_id
-    columns : centers'id
+    columns : centers_id
     values : mean of ratings
 '''
 
 
-def add_classes(filepath, dico_class, something_id):
+def add_classes(filepath, dico_class, something_id='product_id'):
     dfdico = pd.DataFrame({'Cluster': [np.nan], something_id: [np.nan]})
     df = pd.read_csv(filepath, header=0, sep=";", nrows=int(1e3))
     for v in dico_class.keys():
@@ -145,6 +132,25 @@ def add_classes(filepath, dico_class, something_id):
                                     as_index=False)['rating'].mean()
     return(df_merge)
 
+# %%
+
+
+'''
+Function add_classes_user
+
+Input : - df : DataFrame
+        - dico_class : dictionnary of clusters got by calling make_clusters
+        - something_id : value as user_id or product_id (default : 'user_id')
+
+Output : User_id/centers matrix
+
+The function calculates the mean of the ratings of users from the same
+clustering
+    rows: user_id
+    columns : centers_id
+    values : mean of ratings
+'''
+
 
 def add_classes_user(df, dico_class, something_id='user_id'):
     dfdico = pd.DataFrame({'Cluster2': [np.nan], something_id: [np.nan]})
@@ -158,15 +164,3 @@ def add_classes_user(df, dico_class, something_id='user_id'):
     df_merge = df_merge.groupby(['Cluster', 'Cluster2'],
                                 as_index=False)['rating'].mean()
     return(df_merge)
-
-
-prod = "/home/alexis/Documents/M2 SID/Sid Critique/data_v3/products_V4.csv"
-rate = "/home/alexis/Documents/M2 SID/Sid Critique/data_v3/ratings_V3.csv"
-fpn = find_centers(rate, prod, 5, 'item', 1.0)
-distance = similarity_user_user_dic(to_dict(rate, prod, 'item'))
-cl = make_clusters(fpn, distance, 'product_id')
-df = add_classes(rate, cl, 'product_id')
-fpn = find_centers(rate, prod, 3, 'user', 1.0)
-distance = similarity_user_user_dic(to_dict(rate, prod, 'user'))
-cl = make_clusters(fpn, distance, 'user_id')
-df = add_classes_user(df, cl, 'user_id')

@@ -13,18 +13,16 @@ import pandas as pd
 '''
 Function groupby_product_date
 
-Input : - csv rating file path
-        - csv products file path
+Input : - filepath_rating : csv rating file path
+        - filepath_product : csv products file path
+        - nrows : number of the rows of the file to read (default : 1e3)
+
 Output : Products/Dates Counts(Rating) Matrix for movies
 
 The function counts the number of ratings per movies per dates :
     rows : products
     columns : dates
     values : counts(ratings)
-
-Ex : df_test = groupby_product_date('C:/Users/alice/Documents/SID/S1/G2_
-Projet/donnees/ratings_V3.csv','C:/Users/alice/Documents/SID/S1/G2_ Projet/
-donnees/products_V3.csv', int(1e5))
 '''
 
 
@@ -48,8 +46,9 @@ Function variable_speed
 Input : - df : DataFrame of the previous function (groupby_product_date)
         - threshold_slow (integer)
         - threshold_fast (integer)
-Output : - dico_slow
-         - dico_fast
+
+Output : - dico_slow : dictionary with the slow variables
+         - dico_fast : dictionary with the fast variables
 
 The function, for each movie, recovers the date and the number of ratings given
 for this date.
@@ -57,8 +56,6 @@ These numbers of ratings are splited between the slow variables and/or the
 fast variables (thanks to the slow threshold and the fast threshold).
 The function returns 2 dictionaries for the slow variables (dico_slow) and the
 fast variables (dico_fast).
-
-Ex : dico_slow, dico_fast = variable_speed(df_test, 3, 6)
 '''
 
 

@@ -4,7 +4,20 @@ import matplotlib.pyplot as plt
 import datetime
 import matplotlib.dates as mdates
 
-# Plot
+# %%
+
+'''
+Function nb_ratings_before_date
+
+Input : - filepath_rating : csv rating file path
+        - nrows : rows number choosen
+
+Output : Graph date/number_of_ratings
+
+The function shows a graph of the number of ratings over time :
+    horizontal axis : date
+    vertical axis : number of ratings
+'''
 
 
 def nb_ratings_before_date(filepath_rating, nrows):
@@ -19,8 +32,8 @@ def nb_ratings_before_date(filepath_rating, nrows):
 
     fig, ax = plt.subplots()
     ax.plot(df_cum.date, df_cum.rating_id)
-    years = mdates.YearLocator()  
-    months = mdates.MonthLocator()  
+    years = mdates.YearLocator()
+    months = mdates.MonthLocator()
     yearsFmt = mdates.DateFormatter('%Y')
     datemin = datetime.date(df_cum.date.min().year, 1, 1)
     datemax = datetime.date(df_cum.date.max().year + 1, 1, 1)
@@ -33,11 +46,21 @@ def nb_ratings_before_date(filepath_rating, nrows):
     plt.ylabel('Nombre de notes cumulées')
     plt.show()
 
+# %%
 
-# cumule = nb_ratings_before_date("C:/Projet/Data/ratings_V3.csv", nrows=1e3)
-# cumule
 
-# Bar
+'''
+Function nb_ratings_years
+
+Input : - filepath_rating : rating path
+        - nrows : rows number choosen
+
+Output : Graph year/number_of_ratings
+
+The function shows a graph of the number of ratings subscribing each year :
+    horizontal axis : year
+    vertical axis : number of ratings
+'''
 
 
 def nb_ratings_years(filepath_rating, nrows):
@@ -58,7 +81,3 @@ def nb_ratings_years(filepath_rating, nrows):
     plt.xlabel('Année')
     plt.ylabel('Nombre de notes')
     plt.show()
-
-# histo = nb_ratings_years("C:/Projet/Data/ratings_V3.csv", nrows=1e2)
-# histo
-
