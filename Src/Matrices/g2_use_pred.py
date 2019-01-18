@@ -23,7 +23,7 @@ Function collaborative_filtering
 
 Input : - filepath_rating : csv rating file path
         - filepath_product : csv products file path
-        - k : number of neighbors (default : 1)
+        - k : number of neighbors (default : 10)
         - t : to choose between matrix or dico (default : 'matrix')
         - t_user : to choose between the matrix users/items or items/users
         (default : 'user')
@@ -31,6 +31,7 @@ Input : - filepath_rating : csv rating file path
                              - Book : 2.0
                              - Serie : 4.0
         - filesize : number of the rows of the file to read (default : 1e3)
+        - jpnb : if you execute with Jupyter (default : 'False')
 
 Output : Predicted Matrix Users/Products
 
@@ -38,7 +39,7 @@ The function returns the predicted matrix Users/Products
 '''
 
 
-def collaborative_filtering(filepath_rating, filepath_product, k=1,
+def collaborative_filtering(filepath_rating, filepath_product, k=10,
                             t='matrix', t_user='user', modality=1.0,
                             rating_rows=1e3, prod_rows=1e5, jpnb=False):
     matrix_user_item = to_matrix(filepath_rating, filepath_product, t_user,
@@ -49,11 +50,10 @@ def collaborative_filtering(filepath_rating, filepath_product, k=1,
     if t == 'matrix':
         distance = similarity_user_user_mat(matrix_user_item)
     else:
-        matrice_creuse = to_dict(filepath_rating, filepath_product, t_user,
+        hollow_matrix = to_dict(filepath_rating, filepath_product, t_user,
                                  modality, rating_rows, prod_rows)
-        distance = similarity_user_user_dic(matrice_creuse)
-    #df_knn = predit_df(matrix_user_item, distance, jpnb, k)
-    df_knn_CR = predit_df(matrix_user_item_scale, distance, jpnb, k)
+        distance = similarity_user_user_dic(hollow_matrix)
+    df_knn_CR = predit(matrix_user_item_scale, distance, jpnb, k)
     
     valpred = recalculate(matrix_user_item,df_knn_CR)
     return valpred
