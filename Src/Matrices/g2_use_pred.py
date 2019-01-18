@@ -56,4 +56,6 @@ def collaborative_filtering(filepath_rating, filepath_product, k=10,
     df_knn_CR = predit(matrix_user_item_scale, distance, jpnb, k)
     
     valpred = recalculate(matrix_user_item,df_knn_CR)
+>>>>>>> master
     return valpred
+>>>>>>> master

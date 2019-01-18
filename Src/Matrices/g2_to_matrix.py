@@ -130,6 +130,61 @@ def to_dict(filepath_rating, filepath_product, variable='user',
 # %%
 
 '''
+<<<<<<< HEAD
+Function to_2d
+
+Input : - csv rating file path
+        - csv products file path
+
+Output : User/Products Rating dictionary for movies
+
+The function transforms the ratings and the products files to a dictionary :
+    key : users
+    values : set of (products,rate) tuples
+'''
+
+
+<<<<<<< HEAD
+def to_2d(filepath_rating, filepath_product):
+    df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(1e3))
+    df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(1e5))
+    df_join = pd.merge(df_rating, df_prod, on='product_id')
+=======
+def to_2d(filepath_rating, filepath_product, modality=1.0, rating_rows = 1e3, prod_rows = 1e5):
+    if isinstance(rating_rows,int) or isinstance(rating_rows,float):
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";", nrows=int(rating_rows))
+    else:
+        df_rating = pd.read_csv(filepath_rating, header=0, sep=";")
+    
+    if isinstance(prod_rows,int) or isinstance(prod_rows,float):
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";", nrows=int(prod_rows))
+    else:
+        df_prod = pd.read_csv(filepath_product, header=0, sep=";")
+    
+    if (isinstance(modality,int) or isinstance(modality,float)):
+        df_prod = df_prod.loc[df_prod['subtype_id'] == modality]
+    
+    df_join = pd.merge(df_rating, df_prod, on='prodcut_id')
+>>>>>>> master
+    df_join = df_join.loc[:, ['rating_id', 'user_id', 'product_id', 'rating',
+                              'date_rating', 'subtype_id']]
+    df_join = df_join.pivot(index='user_id', columns='product_id',
+                            values='rating')
+    d_users_rates = {}
+    for i in df_join.index:
+        s_users = list()
+        for j in df_join.columns:
+            if not np.isnan(df_join[j][i]):
+                s_users.append((j, int(df_join[j][i])))
+        d_users_rates[i] = s_users
+    return d_users_rates
+
+
+# %%
+
+'''
+=======
+>>>>>>> master
 Function unbias
 
 Input : - df : DataFrame to be unbiased
